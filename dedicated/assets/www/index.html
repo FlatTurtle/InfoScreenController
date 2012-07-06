@@ -1,0 +1,81 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+
+	<title></title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<meta name="viewport" content="width=device-width">
+
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+	<div id="header-container">
+		<header class="wrapper clearfix">
+			<nav>
+				<ul>
+					<li><a href="#">Controller</a></li>
+					<li><a href="#">Report</a></li>
+					<li><a href="#">About</a></li>
+				</ul>
+			</nav>
+		</header>
+	</div>
+	<div id="main-container">
+		<div id="main" class="wrapper clearfix">
+                  <ul>
+			<li id="button1" class="touchbutton wrapper clearfix">
+                          <!--<img height="50px" src="http://qph.cf.quoracdn.net/main-qimg-3677855935f2ff9a672299288e78f4ec"/>-->
+                          ON
+                        </li>
+
+			<li id="button2" class="touchbutton wrapper clearfix">
+                          OFF
+                        </li>
+
+			<li id="button3" class="touchbutton wrapper clearfix">
+                          Reload
+                        </li>
+
+
+			<li id="button4" class="touchbutton wrapper clearfix">
+                          <label>Post a notice: </label><br/>
+                          <input id="custommessage" type="text" value="" /><br/>
+                          <input id="button4submit" type="button" value="Publish"/>
+                        </li>
+            <li id="button5" class="touchbutton wrapper clearfix">
+                          <label>Show an image: </label><br/>
+                          <input id="image_url" type="text" value="" /><br/>
+                          <input id="buttontest" type="button" value="Publish"/>
+                        </li>
+            <li id="button6" class="touchbutton wrapper clearfix">
+                <label>Browse to url: </label><br/>
+                <input id="page_url" type="text" value="" /><br/>
+                <input id="button_url" type="button" value="Publish"/>
+            </li>
+            </ul>
+            <a onclick="capturePhoto()">CAPTURE</a>
+
+        </div> <!-- #main -->
+	</div> <!-- #main-container -->
+
+	<div id="footer-container">
+		<footer class="wrapper">
+		  <h3 id="footer"><img src="http://img.flatturtle.com/flatturtle/logo/FlatTurtle-slogan.png" alt="<?php echo $this->title(); ?>" height="80px"/></h3>
+		</footer>
+	</div>
+    <script type="text/javascript" charset="utf-8" src="js/libs/cordova-1.9.0.js"></script>
+    <script type="text/javascript" src="js/libs/jquery-1.7.2.min.js"></script>
+
+    <script rel="text/javascript" charset="utf-8" src="js/conf.js"></script>
+    <script rel="text/javascript" charset="utf-8" src="js/script.js"></script>
+
+</body>
+</html>
