@@ -4,7 +4,7 @@ dedicated/res/values/config.xml
 dedicated/.classpath
 dedicated/.project
 dedicated/.settings
-dedicated/bin
+dedicated/bin/
 
 dedicated/assets/www/.idea
 # built application files
