@@ -1,2 +1,25 @@
 *.class
-dedicated/assets/www/js/conf.js
+dedicated/assets/www/js/config.js
+dedicated/res/values/config.xml
+dedicated/.classpath
+dedicated/.project
+dedicated/.settings
+dedicated/bin
+
+dedicated/assets/www/.idea
+# built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+
+# Local configuration file (sdk path, etc)
+local.properties
