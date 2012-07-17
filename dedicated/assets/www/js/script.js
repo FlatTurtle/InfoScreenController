@@ -6,12 +6,19 @@ $(document).bind("mobileinit", function() {
 });
 
 function checkStatus(status){
-    if(status === 403){
+    if(status == 403){
         $.mobile.changePage("#authentication", {
             reverse : false,
             changeHash : false
         });
         console.log('status message: '+status);
+    }
+    else if(status == 400){
+    	$('#lists').html('');
+    	$('#lists').append('<a id=\'refresh\' data-role=\'button\'>refresh</a>');
+    	$('#refresh').live('click', function() {
+    		getTurtles();
+    	});
     }
     else{
         console.log('status message: '+status);
@@ -27,22 +34,26 @@ function initiate() {
 }
 
 function getImage(i) {
-    switch (turtles[i].module) {
-    case "nmbs":
-        //alert("still at school")
-        return 'images/nmbs.png';
-    case "map":
-        //alert("still young")
-        return 'images/nmbs.png';
-    case "delijn":
-        //alert("start lying")
-        return 'images/nmbs.png';
-    case "4":
-        //alert("start saving")
-        return 'images/nmbs.png';
-    default:
-        return 'images/nmbs.png';
-    }
+	switch (turtles[i].module) {
+	case "nmbs":
+		// alert("still at school")
+		return 'images/train_icon.png';
+	case "map":
+		// alert("still young")
+		return 'images/map_icon.png';
+	case "delijn":
+		// alert("start lying")
+		return 'images/bus_icon.png';
+	case "twitter":
+		// alert("start saving")
+		return 'images/news_icon.png';
+	case "airport":
+		return 'images/plane_icon.png';
+	case "mivbstib":
+		return 'images/subway_icon.png';
+	default:
+		return 'images/bike_icon.png';
+	}
 }
 
 function getTurtles() {
@@ -55,13 +66,16 @@ function getTurtles() {
         },
         success : function(response) {
             var i=0;
-            console.log(response);
             turtles = response;
-            $('#lists').html('');
+            var html = '';
             $.each(response, function(key) {
-                if(i%3 == 0) $("#lists").append('<div class=\'ui-block-a\' id =\'listel-'+i+'\'><div style=\'height:100px\' ><img style=\'height:90%\' src=\''+getImage(i)+'\'></img></div>'+response[key].module+' '+response[key]['value']+'</div>');
-                else if(i%3 == 1) $("#lists").append('<div class=\'ui-block-b\' id =\'listel-'+i+'\'><div style=\'height:100px\' ><img style=\'height:90%\' src=\''+getImage(i)+'\'></img></div>'+response[key].module+' '+response[key]['value']+'</div>');
-                else $("#lists").append('<div class=\'ui-block-c\' id =\'listel-'+i+'\'><div style=\'height:100px\' ><img style=\'height:90%\' src=\''+getImage(i)+'\'></img></div>'+response[key].module+' '+response[key]['value']+'</div>');
+                if(i%3 == 0)html+='<tr>';
+                html+= '<td id =\'listel-'+i+'\' style=\'width:33%\'><div><img style=\'\' src=\''+getImage(i)+'\'></div></td>';
+                if (i%3 == 2){
+                	html+= '</tr><tr valign=\'top\'><td><p>'+turtles[key-2]['value']+'</p></td><td><p>'+turtles[key-1]['value']+'</p></td><td><p>'+turtles[key]['value']+'</p></td></tr>';
+                }
+                $('#lists').html(html);
+                
                 $('#listel-' + i).live('click', function() {
                     var index = $(this).index();
                     $.ajax({
@@ -74,9 +88,6 @@ function getTurtles() {
                             turtle : turtles[index]['id']
                         },
                         success : function(response) {
-                            //console.log(response);
-                            //token = response;
-                            //getTurtles();
                             console.log(turtles[index].module);
                         },
                         error : function(xhr, ajaxOptions, thrownError) {
@@ -87,10 +98,21 @@ function getTurtles() {
                 });
                 i++;
             });
+            if((i-1)%3 != 2 ){
+            	var tot=i-1;
+            	html+= '</tr><tr>';
+            	while((i-1)%3 == 0){
+            		html+='<td><p>'+turtles[tot-(i-1)%3]['value']+'</p></td>';
+            		i--;
+            	}
+            	html+= '</tr>';
+            	$('#lists').html(html);
+            }
             $.mobile.changePage("#main", {
                 reverse : false,
                 changeHash : false
             });
+            console.log(html);
         },
         error : function(xhr, ajaxOptions, thrownError) {
             checkStatus(xhr.status);
