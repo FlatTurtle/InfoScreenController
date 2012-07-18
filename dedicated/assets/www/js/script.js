@@ -11,7 +11,6 @@ function checkStatus(status){
             reverse : false,
             changeHash : false
         });
-        console.log('status message: '+status);
     }
     else if(status == 400){
     	$('#lists').html('');
@@ -20,10 +19,31 @@ function checkStatus(status){
     		getTurtles();
     	});
     }
-    else{
-        console.log('status message: '+status);
-    }
 }
+
+function clearToken(){
+    token = '';
+}
+
+function changePass(){
+    var newPass = $('#newPass').val();
+    window.plugins.Plugin.get(newPass,function(r) {
+            console.log(r);
+            goto('#main');
+        }, function(e) {
+            console.log(e)
+        });
+}
+
+
+function goto(url) {
+    console.log(url);
+    $.mobile.changePage(url, {
+        reverse : false,
+        changeHash : false
+    });
+}
+
 
 function initiate() {
     try {
@@ -65,6 +85,7 @@ function getTurtles() {
             Authorization : token
         },
         success : function(response) {
+            
             var i=0;
             turtles = response;
             var html = '';
@@ -78,7 +99,6 @@ function getTurtles() {
                 
                 $('#listel-' + i).live('click', function() {
                 	var index = $(this).attr('id').replace('listel-','');
-                	console.log(index);
                   	$('#listel-' + index+' img').attr('src','images/turtle.gif');
                     $.ajax({
                         url : url_controlbay+"plugin/magnify/turtle",
@@ -89,12 +109,13 @@ function getTurtles() {
                         data : {
                             turtle : turtles[index]['id']
                         },
-                        success : function(response) {
-                            console.log(turtles[index].module);
+                        success : function(data, textStatus, xhr) {
+                            console.log(xhr.status+' '+textStatus);
                             $('#listel-' + index+' img').attr('src',getImage(index));
                         },
                         error : function(xhr, ajaxOptions, thrownError) {
                             checkStatus(xhr.status);
+                            console.log(xhr.status+' '+thrownError);
                             $('#listel-' + index+' img').attr('src',getImage(index));
                         }
                     });
@@ -116,10 +137,10 @@ function getTurtles() {
                 reverse : false,
                 changeHash : false
             });
-            console.log(html);
         },
         error : function(xhr, ajaxOptions, thrownError) {
             checkStatus(xhr.status);
+            console.log(xhr.status+' '+thrownError);
         }
     });
 }
@@ -134,9 +155,9 @@ function authenticate() {
             data : {
                 pin : pincode
             },
-            success : function(response) {
-                console.log(response);
-                token = response;
+            success : function(data, textStatus, xhr) {
+                console.log(xhr.status+' '+textStatus);
+                token = data;
                 try {
                     localStorage.setItem("token", token);
                 } catch (e) {}
@@ -144,6 +165,7 @@ function authenticate() {
             },
             error : function(xhr, ajaxOptions, thrownError) {
                 checkStatus(xhr.status);
+                console.log(xhr.status+' '+thrownError);
             }
         });
     } else {
