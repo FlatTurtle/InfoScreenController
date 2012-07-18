@@ -1,38 +1,118 @@
 <!doctype html>
-<html class="no-js" lang="en">
-	<head>
-		<meta charset="utf-8">
+<html class='no-js' lang='en'>
+    <head>
+        <meta charset='utf-8'>
 
-		<title></title>
-		<meta name="description" content="">
-		<meta name="author" content="">
-		<meta name="viewport" content="width=device-width">
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.css"/>
-		<link rel="stylesheet" href="css/style.css"/>
-		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-		<script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/libs/cordova-1.9.0.js"></script>
-	</head>
-	<body>
-		<div data-role="page" data-theme="a" id="main">
-			<div data-role="content">
-				<table data-role="none" id="lists" style="width:100%;text-align:center"></table>
-			</div>
-		</div>
-		<div data-role="page" data-theme="a" id="authentication">
-			<div data-role="content">
+        <title></title>
+        <meta name='description' content=''>
+        <meta name='author' content=''>
+        <meta name='viewport' content='width=device-width'>
+        <link rel='stylesheet' href='http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.css'/>
+        <link rel='stylesheet' href='css/style.css'/>
+        <script src='http://code.jquery.com/jquery-1.7.1.min.js'></script>
+        <script src='http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js'></script>
+        <script type='text/javascript' charset='utf-8' src='js/libs/cordova-1.9.0.js'></script>
+        <script type='text/javascript' charset='utf-8' src='js/libs/iscroll.js'></script>
+        <script type='text/javascript'>
+            var myScroll;
+            var prev = -1;
 
-				<form>
-					<label >pincode</label>
-					<input type="text" id='pincode' value="222222"></input>
-					<div data-role="button" value="Submit" onclick="authenticate()">
-						Submit
-					</div>
-				</form>
-			</div>
-		</div>
-		<script type="text/javascript" charset="utf-8" src="js/config.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/script.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/keyload.js"></script>
-	</body>
+            function loaded() {
+                myScroll = new iScroll('wrapper', {
+                    momentum : true,
+                    hScrollbar : false,
+                    onScrollEnd : function() {
+                    }
+                });
+            }
+
+            idleTimer = null;
+            idleState = false;
+            idleWait = 10000;
+
+            (function($) {
+
+                $(document).ready(function() {
+
+                    $('*').bind('mousemove keydown scroll', function() {
+
+                        clearTimeout(idleTimer);
+
+                        if (idleState == true) {
+
+                            // Reactivated event
+                            console.log('welcome back');
+                        }
+
+                        idleState = false;
+
+                        idleTimer = setTimeout(function() {
+
+                            // Idle Event
+                            console.log('you\'ve been idle for quit some time');
+                            myScroll.scrollTo(-400,0);
+
+                            idleState = true;
+                        }, idleWait);
+                    });
+
+                    $('body').trigger('mousemove');
+
+                });
+            })(jQuery)
+
+            document.addEventListener('DOMContentLoaded', loaded, false);
+        </script>
+    </head>
+    <body>
+        <div data-role='page' data-theme='a' id='main'>
+            <div data-role='content'>
+                <!--<table data-role='none' id='lists' style='width:100%;text-align:center'></table>-->
+                <div id='wrapping'>
+                    <div id='wrapper' data-role='none'>
+                        <div id='scroller' style='margin-top:250px'>
+                            <ul id='thelist'>
+                                <li><img id='img0' style='width:200px' src='images/taxi_icon.png'>
+                                    <p>
+                                        taxi
+                                    </p>
+                                </li>
+                                <li><img id='img1' style='width:200px' src='images/plane_icon.png'>
+                                    <p>
+                                        plane
+                                    </p>
+                                </li>
+                                <li><img id='img2' style='width:200px' src='images/news_icon.png'>
+                                    <p>
+                                        news
+                                    </p>
+                                </li>
+                                <li><img id='img3' style='width:200px' src='images/map_icon.png'>
+                                    <p>
+                                        map
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-role='page' data-theme='a' id='authentication'>
+            <div data-role='content'>
+
+                <form>
+                    <label >pincode</label>
+                    <input type='text' id='pincode' value='222222'>
+                    </input>
+                    <div data-role='button' value='Submit' onclick='authenticate()'>
+                        Submit
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type='text/javascript' charset='utf-8' src='js/config.js'></script>
+        <script type='text/javascript' charset='utf-8' src='js/script.js'></script>
+        <script type='text/javascript' charset='utf-8' src='js/keyload.js'></script>
+    </body>
 </html>

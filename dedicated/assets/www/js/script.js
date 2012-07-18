@@ -63,66 +63,70 @@ function getTurtles() {
         dataType : 'json',
         headers : {
             Authorization : token
-        },
-        success : function(response) {
-            var i=0;
-            turtles = response;
-            var html = '';
-            $.each(response, function(key) {
-                if(i%3 == 0)html+='<tr>';
-                html+= '<td id =\'listel-'+i+'\' style=\'width:33%\'><div><img style=\'\' src=\''+getImage(i)+'\'></div></td>';
-                if (i%3 == 2){
-                	html+= '</tr><tr valign=\'top\'><td><p>'+turtles[key-2]['value']+'</p></td><td><p>'+turtles[key-1]['value']+'</p></td><td><p>'+turtles[key]['value']+'</p></td></tr>';
-                }
-                $('#lists').html(html);
-                
-                $('#listel-' + i).live('click', function() {
-                    var index = $(this).index();
-                    $.ajax({
-                        url : url_controlbay+"plugin/magnify/turtle",
-                        type : "POST",
-                        headers : {
-                            Authorization : token
-                        },
-                        data : {
-                            turtle : turtles[index]['id']
-                        },
-                        success : function(response) {
-                            console.log(turtles[index].module);
-                        },
-                        error : function(xhr, ajaxOptions, thrownError) {
-                            checkStatus(xhr.status);
-                        }
-                    });
-
-                });
-                i++;
-            });
-            if((i-1)%3 != 2 ){
-            	var tot=i-1;
-            	html+= '</tr><tr>';
-            	while((i-1)%3 == 0){
-            		html+='<td><p>'+turtles[tot-(i-1)%3]['value']+'</p></td>';
-            		i--;
-            	}
-            	html+= '</tr>';
-            	$('#lists').html(html);
-            }
-            $.mobile.changePage("#main", {
-                reverse : false,
-                changeHash : false
-            });
-            console.log(html);
-        },
-        error : function(xhr, ajaxOptions, thrownError) {
-            checkStatus(xhr.status);
-        }
-    });
-}
+        }//,
+//        success : function(response) {
+//            var i=0;
+//            turtles = response;
+//            var html = '';
+//            $.each(response, function(key) {
+//                if(i%3 == 0)html+='<tr>';
+//                html+= '<td id =\'listel-'+i+'\' style=\'width:33%\'><div><img style=\'\' src=\''+getImage(i)+'\'></div></td>';
+//                if (i%3 == 2){
+//                	html+= '</tr><tr valign=\'top\'><td><p>'+turtles[key-2]['value']+'</p></td><td><p>'+turtles[key-1]['value']+'</p></td><td><p>'+turtles[key]['value']+'</p></td></tr>';
+//                }
+//                $('#lists').html(html);
+//                
+//                $('#listel-' + i).live('click', function() {
+//                    var index = $(this).attr('id').replace('listel-','');
+//                    console.log(index);
+//                    $('#listel-' + index+' img').attr('src','images/turtle.gif');
+//                    $.ajax({
+//                        url : url_controlbay+"plugin/magnify/turtle",
+//                        type : "POST",
+//                        headers : {
+//                            Authorization : token
+//                        },
+//                        data : {
+//                            turtle : turtles[index]['id']
+//                        },
+//                        success : function(response) {
+//                            console.log(turtles[index].module);
+//                            $('#listel-' + index+' img').attr('src',getImage(index));
+//                        },
+//                        error : function(xhr, ajaxOptions, thrownError) {
+//                            checkStatus(xhr.status);
+//                            $('#listel-' + index+' img').attr('src',getImage(index));
+//                        }
+//                    });
+//
+//                });
+//                i++;
+//            });
+//            if((i-1)%3 != 2 ){
+//            	var tot=i-1;
+//            	html+= '</tr><tr>';
+//            	while((i-1)%3 == 0){
+//            		html+='<td><p>'+turtles[tot-(i-1)%3]['value']+'</p></td>';
+//            		i--;
+//            	}
+//            	html+= '</tr>';
+//            	$('#lists').html(html);
+//            }
+//            $.mobile.changePage("#main", {
+//                reverse : false,
+//                changeHash : false
+//            });
+//            console.log(html);
+//        },
+//        error : function(xhr, ajaxOptions, thrownError) {
+//            checkStatus(xhr.status);
+//        }
+//    });
+});}
 
 function authenticate() {
     var pincode = $('#pincode').val();
-    if (pincode != 0) {
+    if (pincode !== 0) {
 
         $.ajax({
             url : url_controlbay+"auth/mobile",
