@@ -77,7 +77,9 @@ function getTurtles() {
                 $('#lists').html(html);
                 
                 $('#listel-' + i).live('click', function() {
-                    var index = $(this).index();
+                	var index = $(this).attr('id').replace('listel-','');
+                	console.log(index);
+                  	$('#listel-' + index+' img').attr('src','images/turtle.gif');
                     $.ajax({
                         url : url_controlbay+"plugin/magnify/turtle",
                         type : "POST",
@@ -89,9 +91,11 @@ function getTurtles() {
                         },
                         success : function(response) {
                             console.log(turtles[index].module);
+                            $('#listel-' + index+' img').attr('src',getImage(index));
                         },
                         error : function(xhr, ajaxOptions, thrownError) {
                             checkStatus(xhr.status);
+                            $('#listel-' + index+' img').attr('src',getImage(index));
                         }
                     });
 
