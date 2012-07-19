@@ -17,6 +17,7 @@ function onDeviceReady() {
     window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
     initiate();
     installPlugin();
+    
 }
 
 function gotFS(fileSystem) {

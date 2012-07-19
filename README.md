@@ -14,7 +14,7 @@ The url to the controlbay has to be defined in the config.js found in assets/www
 Dependencies
 ============
 
-Android 2.3 needed
+Android 2.1 needed
 
 Copyright and license
 =====================

@@ -12,11 +12,18 @@
 		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/libs/cordova-1.9.0.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/libs/iscroll-lite.js"></script>
 	</head>
 	<body>
 		<div data-role="page" data-theme="a" id="main">
 			<div data-role="content">
-				<table data-role="none" id="lists" style="width:100%;text-align:center"></table>
+				<div data-role='none'>
+					<div id="wrapper">
+						<div class="scroller">
+	                        <table data-role="none" id="lists" style="width:100%;text-align:center"></table>
+	                    </div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div data-role="page" data-theme="a" id="authentication">
