@@ -1,7 +1,6 @@
 package com.project.example;
 
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.EmptyStackException;
 
 import org.apache.cordova.DroidGap;
 
@@ -17,7 +16,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -25,25 +23,37 @@ import android.widget.EditText;
 public class MainActivity extends DroidGap {
     public static Activity act;
     private String password;
+    
+    /*
+     * (non-Javadoc)
+     * @see org.apache.cordova.DroidGap#onCreate(android.os.Bundle)
+     * startup of application
+     */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	
-    	
         act = this;
         super.onCreate(savedInstanceState);
+        
+        //get password from android cache
         SharedPreferences settings = getPreferences(2);
 	    password = settings.getString("password",getResources().getString(R.string.password));
 	    
+	    //force fullscreen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.loadUrl(getResources().getString(R.string.url_InfoScreenController));
-        // super.loadUrl("http://oktest-picasa.appspot.com/example.html");
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
                         | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        
+        
+        /*
+         * override the default exception handling
+         * This ensures the app restarts when it has crashed.
+         */
         final PendingIntent intent = PendingIntent.getActivity(this
                 .getApplication().getBaseContext(), 0, new Intent(getIntent()),
                 getIntent().getFlags());
@@ -58,13 +68,13 @@ public class MainActivity extends DroidGap {
             }
         });
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
-
+    
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
+     * override the back button, home button and menu button
+     * Only back button overriding works for the moment
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.d("KEYCODE", keyCode + "");
@@ -76,7 +86,10 @@ public class MainActivity extends DroidGap {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
             System.out.println("KEYCODE_BACK");
             Log.d("BACK", "BACK");
-            // throw new EmptyStackException();
+            
+            /*
+             * build dialog that prevents the user from leaving the turtlescreen without providing a password
+             */
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
             alert.setTitle("Give password");
@@ -93,8 +106,6 @@ public class MainActivity extends DroidGap {
                                 int whichButton) {
                             Editable value = input.getText();
                             if(value.toString().compareTo(password) == 0){
-                                //Intent myintent= new Intent(android.provider.Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS);
-                                //startActivity(myintent);
                             	loadUrl(getResources().getString(R.string.url_InfoScreenController)+"#admin");
                             }
                         }

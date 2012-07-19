@@ -3,15 +3,16 @@
  * User: gbostoen
  * Date: 7/13/12
  * Time: 1:47 PM
- * To change this template use File | Settings | File Templates.
+ * loads key and triggers event on deviceready
  */
-var localkey = 0;
+var localkey;
 function onLoad() {
     document.addEventListener("deviceready", onDeviceReady, false);
 }
 
-// Cordova is ready
-//
+/*
+ * Cordova(=Phonegap) ready to accept requests
+ */
 function onDeviceReady() {
     window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
     initiate();
@@ -27,7 +28,6 @@ function gotFileEntry(fileEntry) {
 }
 
 function gotFile(file){
-    //readDataUrl(file);
     readAsText(file);
 }
 

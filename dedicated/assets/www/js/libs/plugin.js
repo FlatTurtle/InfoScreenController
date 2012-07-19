@@ -6,8 +6,8 @@ Plugin = function() {
     console.log("initializing Test Plugin");
 };
 
-Plugin.prototype.get = function(passValue,successCallback, callbackError) {
-    cordovaRef.exec(successCallback, callbackError, "ChangePass", "change", [passValue]);
+Plugin.prototype.get = function(action,passValue,successCallback, callbackError) {
+    cordovaRef.exec(successCallback, callbackError, "ChangePass", action, [passValue]);
 };
 
 /**

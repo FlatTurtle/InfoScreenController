@@ -1,19 +1,13 @@
 package com.project.example;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.cordova.DroidGap;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.util.Log;
-import android.text.Html;
 
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
@@ -54,6 +48,11 @@ public class ChangePass extends Plugin {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			return new PluginResult(PluginResult.Status.OK);
+		}
+		else if(action.equals("startSettings")){
+			Intent myintent= new Intent(android.provider.Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS);
+			((DroidGap) this.ctx).startActivity(myintent);
 			return new PluginResult(PluginResult.Status.OK);
 		}
 		return new PluginResult(PluginResult.Status.INVALID_ACTION);
