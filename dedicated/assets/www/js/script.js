@@ -179,8 +179,7 @@ function getTurtles() {
 
 function authenticate() {
     var pincode = $('#pincode').val();
-    //localkey is the dedicated key stored on the external storage of the phone. 
-    //gives special permissions
+    //no dedicated key found on external storage
     if (pincode != 0 && !localkey) {
         console.log('pin given but no localkey');
         $.ajax({
@@ -205,7 +204,8 @@ function authenticate() {
             }
         });
     } 
-    //no dedicated key found on external storage
+    //localkey is the dedicated key stored on the external storage of the phone. 
+    //gives special permissions
     else if(pincode != 0 && localkey){
         console.log('pin given and a localkey');
         $.ajax({
