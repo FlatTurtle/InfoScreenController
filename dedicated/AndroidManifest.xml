@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.project.example"
+    package="com.flatturtle"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -33,7 +33,7 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.project.example.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             
             

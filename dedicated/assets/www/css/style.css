@@ -1,8 +1,4 @@
 @CHARSET "UTF-8";
-.ui-block-a, .ui-block-b, .ui-block-c {
-    height: 150px;
-    text-align: center;
-}
 .ui-page{
     background: #0E4959;
 }

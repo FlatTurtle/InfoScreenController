@@ -10,20 +10,45 @@ $(document).bind("mobileinit", function() {
 /*
  * check error codes and react accordingly
  */
-function checkStatus(status) {
-    if (status == 403) {
+function checkStatus(xhr, ajaxOptions, thrownError) {
+    console.log(xhr.status + ' ' + thrownError + ' ' + xhr.responseText);
+    if (xhr.status == 403) {
+        alert(xhr.responseText);
         $.mobile.changePage("#authentication", {
             reverse : false,
             changeHash : false
         });
-    } else if (status == 400) {
-        $('#lists').html('');
-        $('#lists').append('<a id=\'refresh\' data-role=\'button\'>refresh</a>');
-        $('#refresh').live('click', function() {
-            getTurtles();
-        });
+    } else if (xhr.status == 400) {
+        $('#lists').html('<a id=\'refresh\' data-role=\'button\'>refresh</a>');
+        $('#refresh').live('click', getTurtles());
     }
 }
+
+function getLabel(object){
+    console.log(object.module);
+    switch(object.module){
+        case "velo":
+            return "velo";
+        case "villo":
+            return "villo"
+        default:
+            return object['value'];
+    }
+}
+
+
+function checkConnection() {
+    $.ajax({
+        url : 'http://wwww.google.be',
+        success : function(data) {
+            return true;
+        },
+        error : function(data) {
+            return false;
+        }
+    });
+}
+
 
 /*
  * removes token so you can request a new token with a specified pincode
@@ -31,17 +56,16 @@ function checkStatus(status) {
 function clearToken() {
     token = '';
 }
+
 /*
  * starts up a phonegap plugin so you can access the appsettings
  */
 function appSettings() {
-    window.plugins.Plugin.get("startSettings", "nothing", function(r) {
+    window.plugins.Plugin.get("startSettings", "nothing", function(r){
         console.log(r);
-        //goto('#main');
-    }, function(e) {
-        console.log(e)
-    });
+            }, function(e){console.log(e)});
 }
+
 /*
  * change the password to exit the turtlescreen, phonegap plugin needed because it's accessed by android
  */
@@ -50,10 +74,11 @@ function changePass() {
     window.plugins.Plugin.get("change", newPass, function(r) {
         console.log(r);
         goto('#main');
-    }, function(e) {
-        console.log(e)
+    }, function(e){
+        console.log(e);
     });
 }
+
 /*
  * change the current page
  */
@@ -65,6 +90,7 @@ function goto(url) {
         changeHash : false
     });
 }
+
 /*
  * lookup the token in localstorage and initialize the turtles
  */
@@ -75,31 +101,29 @@ function initiate() {
     } catch (e) {
     }
 }
+
 /*
  * mapping of the modules on images
  */
 function getImage(i) {
     switch (turtles[i].module) {
         case "nmbs":
-            // alert("still at school")
-            return 'images/train_icon.png';
+            return 'images/train_icon.svg';
         case "map":
-            // alert("still young")
-            return 'images/map_icon.png';
+            return 'images/map_icon.svg';
         case "delijn":
-            // alert("start lying")
-            return 'images/bus_icon.png';
+            return 'images/bus_icon.svg';
         case "twitter":
-            // alert("start saving")
-            return 'images/news_icon.png';
+            return 'images/twitter_icon.svg';
         case "airport":
-            return 'images/plane_icon.png';
+            return 'images/plane_icon.svg';
         case "mivbstib":
-            return 'images/subway_icon.png';
+            return 'images/subway_icon.svg';
         default:
-            return 'images/bike_icon.png';
+            return 'images/bike_icon.svg';
     }
 }
+
 /*
  * retrieve turtles
  */
@@ -113,21 +137,21 @@ function getTurtles() {
         },
         success : function(response) {
             // create a table with the given response
-            var i = 0;
+            var i = 0, html = '';
             turtles = response;
-            var html = '';
             $.each(response, function(key) {
-                if (i % 3 == 0)
+                if (i % 3 === 0) {
                     html += '<tr>';
+                }
                 html += '<td id =\'listel-' + i + '\' style=\'width:33%\'><div><img style=\'\' src=\'' + getImage(i) + '\'></div></td>';
-                if (i % 3 == 2) {
-                    html += '</tr><tr valign=\'top\'><td><p>' + turtles[key-2]['value'] + '</p></td><td><p>' + turtles[key-1]['value'] + '</p></td><td><p>' + turtles[key]['value'] + '</p></td></tr>';
+                if (i % 3 === 2) {
+                    html += '</tr><tr valign=\'top\'><td><p>' + getLabel(turtles[key-2]) + '</p></td><td><p>' + getLabel(turtles[key-1]) + '</p></td><td><p>' + getLabel(turtles[key]) + '</p></td></tr>';
                 }
                 $('#lists').html(html);
                 //define the action for a given turtle
-                $('#listel-' + i).live('click', function() {
+                $('#listel-' + i).live('tap', function() {
                     var index = $(this).attr('id').replace('listel-', '');
-                    $('#listel-' + index + ' img').attr('src', 'images/turtle.gif');
+                    $('#listel-' + index + ' img').attr('src', getImage(index).replace('.svg','_pressed.svg'));
                     $.ajax({
                         url : url_controlbay + "plugin/magnify/turtle",
                         type : "POST",
@@ -142,8 +166,7 @@ function getTurtles() {
                             $('#listel-' + index + ' img').attr('src', getImage(index));
                         },
                         error : function(xhr, ajaxOptions, thrownError) {
-                            checkStatus(xhr.status);
-                            console.log(xhr.status + ' ' + thrownError+' '+xhr.responseText);
+                            checkStatus(xhr, ajaxOptions, thrownError);
                             $('#listel-' + index + ' img').attr('src', getImage(index));
                         }
                     });
@@ -152,27 +175,34 @@ function getTurtles() {
                 i++;
             });
             //complex construction just to get the labels of the last turtles
-            if ((i - 1) % 3 != 2) {
+            if ((i - 1) % 3 !== 2) {
                 var tot = i - 1;
                 html += '</tr><tr>';
                 while ((i - 1) % 3 == 0) {
-                    html += '<td><p>' + turtles[tot-(i-1)%3]['value'] + '</p></td>';
+                    html += '<td><p>' + getLabel(turtles[tot-(i-1)%3]) + '</p></td>';
                     i--;
                 }
                 html += '</tr>';
                 $('#lists').html(html);
             }
-            $.mobile.changePage("#main", {
-                reverse : false,
-                changeHash : false
-            });
+            //myScroll = new iScroll('wrapper', { scrollbarClass: 'myScrollbar' });
+            goto('#main');
         },
-        error : function(xhr, ajaxOptions, thrownError) {
-            checkStatus(xhr.status);
-            console.log(xhr.status + ' ' + thrownError+' '+xhr.responseText);
+        error : function (xhr, ajaxOptions, thrownError) {
+            console.log(xhr.status + ' ' + thrownError + ' ' + xhr.responseText);
+            if (xhr.status == 403) {
+                $.mobile.changePage("#authentication", {
+                    reverse : false,
+                    changeHash : false
+                });
+            } else if (xhr.status == 400) {
+                $('#lists').html('<a id=\'refresh\' data-role=\'button\'>refresh</a>');
+                $('#refresh').live('click', getTurtles());
+            }
         }
     });
 }
+
 /*
  * verify if the given pincode is valid
  */
@@ -180,7 +210,7 @@ function getTurtles() {
 function authenticate() {
     var pincode = $('#pincode').val();
     //no dedicated key found on external storage
-    if (pincode != 0 && !localkey) {
+    if (pincode !== 0 && !localkey) {
         console.log('pin given but no localkey');
         $.ajax({
             url : url_controlbay + "auth/mobile",
@@ -199,44 +229,44 @@ function authenticate() {
                 getTurtles();
             },
             error : function(xhr, ajaxOptions, thrownError) {
-                checkStatus(xhr.status);
-                console.log(xhr.status + ' ' + thrownError+' '+xhr.responseText);
+                checkStatus(xhr, ajaxOptions, thrownError);
             }
         });
-    } 
-    //localkey is the dedicated key stored on the external storage of the phone. 
+    }
+    //localkey is the dedicated key stored on the external storage of the phone.
     //gives special permissions
-    else if(pincode != 0 && localkey){
+    else if (pincode !== 0 && localkey) {
         console.log('pin given and a localkey');
+        console.log('localkey '+localkey);
         $.ajax({
             url : url_controlbay + "auth/mobile",
             type : "POST",
             data : {
-                pin : pincode,
-                dedicated_key: localkey
+                dedicated_key : localkey,
+                pin : pincode
             },
             success : function(data, textStatus, xhr) {
                 console.log(xhr.status + ' ' + textStatus);
                 token = data;
+                console.log('data authentication response: '+ data);
                 try {
                     localStorage.setItem("token", token);
                 } catch (e) {
                 }
                 getTurtles();
             },
-            error : function(xhr, ajaxOptions, thrownError) {
-                checkStatus(xhr.status);
-                console.log(xhr.status + ' ' + thrownError+' '+xhr.responseText);
+            error :function (xhr, ajaxOptions, thrownError){
+                checkStatus(xhr, ajaxOptions, thrownError);
             }
         });
-    }
-    else {
+    } else {
         console.log('pincode invalid');
     }
 }
+
 /*
  * measures idle time and triggers event (eg. reloads the site) when the phone has been idle for quiet some time.
- * 
+ *
  */
 idleTimer = null;
 idleState = false;
@@ -250,7 +280,7 @@ idleWait = 60000;
 
             clearTimeout(idleTimer);
 
-            if (idleState == true) {
+            if (idleState === true) {
 
                 // Reactivated event
                 console.log('welcome back');
@@ -262,7 +292,7 @@ idleWait = 60000;
 
                 // Idle Event
                 console.log('you\'ve been idle for quit some time');
-                location.reload(true);
+                if (checkConnection()) location.reload(true);
 
                 idleState = true;
             }, idleWait);
