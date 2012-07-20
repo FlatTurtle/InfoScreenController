@@ -13,14 +13,13 @@ $(document).bind("mobileinit", function() {
 function checkStatus(xhr, ajaxOptions, thrownError) {
     console.log(xhr.status + ' ' + thrownError + ' ' + xhr.responseText);
     if (xhr.status == 403) {
-        alert(xhr.responseText);
         $.mobile.changePage("#authentication", {
             reverse : false,
             changeHash : false
         });
     } else if (xhr.status == 400) {
-        $('#lists').html('<a id=\'refresh\' data-role=\'button\'>refresh</a>');
-        $('#refresh').live('click', getTurtles());
+        //$('#lists').html('<a id=\'refresh\' data-role=\'button\'>refresh</a>');
+        //$('#refresh').on('tap', getTurtles());
     }
 }
 
@@ -55,6 +54,8 @@ function checkConnection() {
  */
 function clearToken() {
     token = '';
+    localStorage.removeItem("token");
+    goto('#authentication');
 }
 
 /*
@@ -108,19 +109,19 @@ function initiate() {
 function getImage(i) {
     switch (turtles[i].module) {
         case "nmbs":
-            return 'images/train_icon.svg';
+            return 'images/train_icon.png';
         case "map":
-            return 'images/map_icon.svg';
+            return 'images/map_icon.png';
         case "delijn":
-            return 'images/bus_icon.svg';
+            return 'images/bus_icon.png';
         case "twitter":
-            return 'images/twitter_icon.svg';
+            return 'images/twitter_icon.png';
         case "airport":
-            return 'images/plane_icon.svg';
+            return 'images/plane_icon.png';
         case "mivbstib":
-            return 'images/subway_icon.svg';
+            return 'images/subway_icon.png';
         default:
-            return 'images/bike_icon.svg';
+            return 'images/bike_icon.png';
     }
 }
 
@@ -147,11 +148,14 @@ function getTurtles() {
                 if (i % 3 === 2) {
                     html += '</tr><tr valign=\'top\'><td><p>' + getLabel(turtles[key-2]) + '</p></td><td><p>' + getLabel(turtles[key-1]) + '</p></td><td><p>' + getLabel(turtles[key]) + '</p></td></tr>';
                 }
+                $('#lists').html('');
                 $('#lists').html(html);
                 //define the action for a given turtle
-                $('#listel-' + i).live('tap', function() {
+                $(document).on('tap','#listel-' + i, function(event) {
+                    event.stopPropagation();
                     var index = $(this).attr('id').replace('listel-', '');
-                    $('#listel-' + index + ' img').attr('src', getImage(index).replace('.svg','_pressed.svg'));
+                    console.log(turtles[index].module);
+                    $('#listel-' + index + ' img').attr('src', getImage(index).replace('.png','_pressed.png'));
                     $.ajax({
                         url : url_controlbay + "plugin/magnify/turtle",
                         type : "POST",
@@ -197,7 +201,7 @@ function getTurtles() {
                 });
             } else if (xhr.status == 400) {
                 $('#lists').html('<a id=\'refresh\' data-role=\'button\'>refresh</a>');
-                $('#refresh').live('click', getTurtles());
+                $('#refresh').on('tap', getTurtles());
             }
         }
     });
