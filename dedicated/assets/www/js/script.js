@@ -24,6 +24,18 @@ function checkStatus(xhr, ajaxOptions, thrownError) {
     }
 }
 
+function getLabel(object){
+    console.log(object.module);
+    switch(object.module){
+        case "velo":
+            return "velo";
+        case "villo":
+            return "villo"
+        default:
+            return object['value'];
+    }
+}
+
 
 function checkConnection() {
     $.ajax({
@@ -102,7 +114,7 @@ function getImage(i) {
         case "delijn":
             return 'images/bus_icon.svg';
         case "twitter":
-            return 'images/news_icon.svg';
+            return 'images/twitter_icon.svg';
         case "airport":
             return 'images/plane_icon.svg';
         case "mivbstib":
@@ -133,13 +145,13 @@ function getTurtles() {
                 }
                 html += '<td id =\'listel-' + i + '\' style=\'width:33%\'><div><img style=\'\' src=\'' + getImage(i) + '\'></div></td>';
                 if (i % 3 === 2) {
-                    html += '</tr><tr valign=\'top\'><td><p>' + turtles[key-2]['value'] + '</p></td><td><p>' + turtles[key-1]['value'] + '</p></td><td><p>' + turtles[key]['value'] + '</p></td></tr>';
+                    html += '</tr><tr valign=\'top\'><td><p>' + getLabel(turtles[key-2]) + '</p></td><td><p>' + getLabel(turtles[key-1]) + '</p></td><td><p>' + getLabel(turtles[key]) + '</p></td></tr>';
                 }
                 $('#lists').html(html);
                 //define the action for a given turtle
-                $('#listel-' + i).live('click', function() {
+                $('#listel-' + i).live('tap', function() {
                     var index = $(this).attr('id').replace('listel-', '');
-                    $('#listel-' + index + ' img').attr('src', $('#listel-' + index + ' img').attr('src').replace('.svg','_pressed.svg'));
+                    $('#listel-' + index + ' img').attr('src', getImage(index).replace('.svg','_pressed.svg'));
                     $.ajax({
                         url : url_controlbay + "plugin/magnify/turtle",
                         type : "POST",
@@ -167,7 +179,7 @@ function getTurtles() {
                 var tot = i - 1;
                 html += '</tr><tr>';
                 while ((i - 1) % 3 == 0) {
-                    html += '<td><p>' + turtles[tot-(i-1)%3]['value'] + '</p></td>';
+                    html += '<td><p>' + getLabel(turtles[tot-(i-1)%3]) + '</p></td>';
                     i--;
                 }
                 html += '</tr>';

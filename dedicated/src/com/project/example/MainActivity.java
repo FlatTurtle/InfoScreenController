@@ -19,6 +19,7 @@ import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import com.flatturtle.R;
 
 public class MainActivity extends DroidGap {
     public static Activity act;

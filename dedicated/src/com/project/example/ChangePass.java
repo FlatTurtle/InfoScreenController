@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.flatturtle.R;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 
