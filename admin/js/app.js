@@ -19,24 +19,75 @@
 		Views : {},
 		Templates : {}
 	};
+	/*
+	 * LOGIN
+	 */
+	App.Views.Login = Backbone.View.extend({
+		el : 'body',
+		initialize : function() {
+			_.bindAll(this, "render");
+			var self = this;
+			if (this.template == null) {
+				$.get("login.html", function(template) {
+					self.template = template;
+					self.render();
+				});
+			}
+		},
+		render : function() {
+			if(this.template){
+				var data = {};
+				// add html to container
+				this.$el.html($.tmpl(this.template, data));
+			}
+			
+		},
+		events: {
+			'click #send' : 'submit'
+		},
+		submit : function(){
+			console.log('submitting');
+			//unsafe sending pass and name to backend except over https?
+			var name = $('#login').val();
+			var pass = $('#password').val();
+			console.log(name+pass);
+			
+			$.ajax({
+                url : 'http://localhost/backendAdmin/index.php/controller/login',
+                type : "POST",
+                data : {
+                    name : name,
+                    pass : pass
+                },
+                success : function(data, textStatus, xhr) {
+                	console.log('success');
+                    console.log(xhr.status + ' ' + textStatus);
+                    appRouter.navigate("screeneditor", {trigger: true, replace: true});
+                },
+                error : function(xhr, ajaxOptions, thrownError) {
+                	console.log('fail');
+                    console.log(xhr.status);
+                }
+            });
+		}
+	});
 
 	/*
 	 * MODULES
 	 */
 
 	// MODEL
-	App.Models.Module = Backbone.Model.extend({
-	});
+	App.Models.Module = Backbone.Model.extend({});
 
 	// COLLECTION
 	App.Collections.Modules = Backbone.Collection.extend({
 		model : App.Models.Module,
-		url : 'http://localhost/serveradmin/index.php/controller/modules'
+		url : 'http://localhost/backendAdmin/index.php/controller/modules'
 	});
 
 	// VIEW
 	App.Views.Modules = Backbone.View.extend({
-		el : $('#appModules'),
+		el : '#appModules',
 		initialize : function() {
 			_.bindAll(this, "render");
 			this.collection.bind("reset", this.render);
@@ -124,18 +175,19 @@
 	// COLLECTION
 	App.Collections.Turtles = Backbone.Collection.extend({
 		model : App.Models.Turtle,
-		url : 'http://localhost/serveradmin/index.php/controller/turtles/9',
-		init : function(){
-			console.log('length collection '+this.length);
-			/*for(x in this.models){
-				if(this.models[x].get('order') == 0) this.models[x].set({})
-			}*/
+		url : 'http://localhost/backendAdmin/index.php/controller/turtles/9',
+		init : function() {
+			console.log('length collection ' + this.length);
+			/*
+			 * for(x in this.models){ if(this.models[x].get('order') == 0)
+			 * this.models[x].set({}) }
+			 */
 		},
 		initialize : function() {
 			this._order_by_id = this.comparator;
 			_.bindAll(this, 'init');
 			this.bind('reset', this.init);
-			console.log('length collection'+this.length);
+			console.log('length collection' + this.length);
 		},
 		comparator : function(model) {
 			return model.get('group') * 100 + model.get('order');
@@ -144,10 +196,9 @@
 
 	// VIEW
 	App.Views.Turtles = Backbone.View.extend({
-		el : $('#appScreen'),
+		el : '#appScreen',
 
 		initialize : function() {
-			console.log("Alerts suck.");
 			_.bindAll(this, "render");
 			// refresh view when collection changes. Is needed because fetch is
 			// async
@@ -165,6 +216,7 @@
 		},
 
 		render : function() {
+			//alert(this.el.toJSON());
 			var self = this;
 			if (this.template) {
 				var turtles = this.collection.toJSON();
@@ -222,10 +274,12 @@
 
 			e.dataTransfer.effectAllowed = 'move';
 			e.dataTransfer.setData('text/html', this.innerHTML);
-			
+
 			var turtleModel = turtles.getByCid($(this).attr('id'));
-			$.each($('.addTurtle'), function() {	
-				if($(this).attr('id').replace('add','') !=  turtleModel.get('group')) $(this).css('visibility', 'visible');
+			$.each($('.addTurtle'), function() {
+				if ($(this).attr('id').replace('add', '') != turtleModel
+						.get('group'))
+					$(this).css('visibility', 'visible');
 			});
 		},
 
@@ -254,7 +308,8 @@
 			if (e.stopPropagation) {
 				e.stopPropagation(); // Stops some browsers from redirecting.
 			}
-			if ($(this).hasClass('addTurtle') && $(dragSrcEl).hasClass('module')) {
+			if ($(this).hasClass('addTurtle')
+					&& $(dragSrcEl).hasClass('module')) {
 				console.log('drop');
 				var alias = $(dragSrcEl).attr('id');
 				var pos = parseInt($(this).attr('id').replace('add', ''));
@@ -307,17 +362,66 @@
 				});
 
 				console.log(turtles.toJSON());
-			}
-			else if($(this).hasClass('addTurtle') && $(dragSrcEl).hasClass('turtle')){
-				var group = parseInt($(this).attr('id').replace('add',''));
-				//alert(group);
+			} else if ($(this).hasClass('addTurtle')
+					&& $(dragSrcEl).hasClass('turtle')) {
+				var group = parseInt($(this).attr('id').replace('add', ''));
 				var turtle = turtles.getByCid($(dragSrcEl).attr('id'));
-				var arrayGroup = turtles.where({group:group});
+				var arrayGroup = turtles.where({
+					group : group
+				});
 				var groupSize = arrayGroup.length;
 				var colspan = arrayGroup[0].get('colspan');
-				turtle.set({group:group,order:groupSize,colspan:colspan});
+				turtle.set({
+					group : group,
+					order : groupSize,
+					colspan : colspan
+				});
 			}
 			turtles.sort();
+		}
+	});
+
+	/*
+	 * SCREENEDITOR VIEW
+	 */
+
+	App.Views.ScreenEditor = Backbone.View.extend({
+		el : 'body',
+
+		initialize : function() {
+			console.log("Alerts suck.");
+			_.bindAll(this, "render");
+
+			var self = this;
+			if (this.template == null) {
+				$.get("structurescreeneditor.html", function(template) {
+					self.template = template;
+					self.render();
+					console.log('hello');
+
+					turtles = new App.Collections.Turtles();
+					turtles.fetch();
+					view = new App.Views.Turtles({
+						collection : turtles
+					});
+
+					modules = new App.Collections.Modules();
+					modules.fetch();
+					view2 = new App.Views.Modules({
+						collection : modules
+					});
+				});
+			}
+		},
+		render : function() {
+			var self = this;
+			if (this.template) {
+				var data = {};
+
+				// add html to container
+				this.$el.html($.tmpl(this.template, data));
+
+			}
 		}
 	});
 
@@ -326,25 +430,19 @@
 	 */
 	var Router = Backbone.Router.extend({
 		routes : {
-			"" : "defaultRoute"
+			'login' : 'login',
+			'screeneditor' : 'defaultRoute'
 		},
 
 		defaultRoute : function() {
-			console.log("defaultRoute");
-			// console.log(movies.length)
-			turtles = new App.Collections.Turtles();
-			turtles.fetch();
-			view = new App.Views.Turtles({
-				collection : turtles
-			});
-
-			modules = new App.Collections.Modules();
-			modules.fetch();
-			view2 = new App.Views.Modules({
-				collection : modules
-			});
+			console.log('defaultRoute');
+			var screenEditorView = new App.Views.ScreenEditor({});
+		},
+		login : function() {
+			console.log('login');
+			var loginView = new App.Views.Login({});
 		}
-	})
+	});
 
 	var appRouter = new Router();
 	Backbone.history.start();
