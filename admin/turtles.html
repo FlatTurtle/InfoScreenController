@@ -1,0 +1,27 @@
+<table style="height:400px;width:100%;text-align:center;background-color:#0480BE">
+    <tr>
+        {{for(var i=0;i<columns;i++)}}
+        <td width={{= 100*1./columns+"%"}}>
+        <div style="border:2px dashed #000;height:300px;"/>
+        {{each turtles}}
+        {{if $value.toJSON().group == (i+1)}}
+        {{if $value.toJSON().order == 0}}
+        <div style="float:left" draggable="true" class="turtle selected" id=${$value.cid}>
+            <img style="width:36px;height:45px;" src=${$value.toJSON().image}>
+            </img>
+        </div>
+        {{else}}
+        <div style="float:left" draggable="true" class="turtle" id=${$value.cid}>
+            <img style="width:36px;height:45px;" src=${$value.toJSON().image}>
+            </img>
+        </div>
+        {{/if}}
+        {{/if}}
+        {{/each}}
+        <div class="addTurtle" id={{= "add"+(i+1)}} style="visibility:collapse;float:left;width:100px;height:100px;background-color:yellow">
+
+        </div>
+        </td>
+        {{/for}}
+    </tr>
+</table>

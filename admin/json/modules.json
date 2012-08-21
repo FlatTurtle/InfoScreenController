@@ -1,0 +1,13 @@
+[ {
+    "alias" : "facebook",
+    "image" : "img/icon-facebook.svg"
+}, {
+    "alias" : "foursquare",
+    "image" : "img/icon-foursquare.svg"
+}, {
+    "alias" : "twitter",
+    "image" : "img/icon-twitter.svg"
+}, {
+    "alias" : "vikingspots",
+    "image" : "img/icon-vikingspots.svg"
+} ]

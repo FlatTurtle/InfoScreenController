@@ -1,0 +1,13 @@
+[ {
+    "alias" : "facebook",
+    "image" : "img/icon-facebook.svg",
+    "group" : 1,
+    "order" : 0,
+    "colspan" : 1
+}, {
+    "alias" : "facebook",
+    "image" : "img/icon-facebook.svg",
+    "group" : 2,
+    "order" : 0,
+    "colspan" : 1
+} ]

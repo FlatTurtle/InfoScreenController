@@ -1,0 +1,6 @@
+<div style="overflow:scroll;height:300px">
+    {{each modules}}
+    <div>${$value.alias}</div>
+    <div ><img style="width:36px;height:45px" id=${$value.alias} class="module" draggable="true" src=${$value.image}></img></div>
+    {{/each}}
+</div>
