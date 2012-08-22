@@ -11,8 +11,7 @@
 })(jQuery);
 
 (function($) {
-	var modules, turtles, view, view2;
-	var dragSrcEl;
+	var modules, turtles, view, view2,user,dragSrcEl,screens,screen;
 	var App = {
 		Models : {},
 		Collections : {},
@@ -46,11 +45,10 @@
 			'click #send' : 'submit'
 		},
 		submit : function(){
-			console.log('submitting');
 			//unsafe sending pass and name to backend except over https?
 			var name = $('#login').val();
 			var pass = $('#password').val();
-			console.log(name+pass);
+			//console.log(name+pass);
 			
 			$.ajax({
                 url : 'http://localhost/backendAdmin/index.php/controller/login',
@@ -60,13 +58,14 @@
                     pass : pass
                 },
                 success : function(data, textStatus, xhr) {
-                	console.log('success');
-                    console.log(xhr.status + ' ' + textStatus);
-                    appRouter.navigate("screeneditor", {trigger: true, replace: true});
+                	//console.log('success');
+                    //console.log(xhr.status + ' ' + textStatus);
+                    username = data;
+                    appRouter.navigate("screens", {trigger: true, replace: true});
                 },
                 error : function(xhr, ajaxOptions, thrownError) {
-                	console.log('fail');
-                    console.log(xhr.status);
+                	//console.log('fail');
+                    //console.log(xhr.status);
                 }
             });
 		}
@@ -110,7 +109,7 @@
 
 				$.each($('.module'),
 						function() {
-							console.log('events');
+							//console.log('events');
 							var el = $(this).get(0);
 							el.addEventListener('dragstart',
 									self.handleDragStart, false);
@@ -126,7 +125,7 @@
 		},
 		handleDragStart : function(e) {
 			// Target (this) element is the source node.
-			console.log('drag');
+			//console.log('drag');
 
 			$(this).css('opacity', '0.4');
 
@@ -142,7 +141,7 @@
 		},
 
 		handleDragOver : function(e) {
-			console.log($(this).attr('id'));
+			//console.log($(this).attr('id'));
 			if (e.preventDefault) {
 				e.preventDefault(); // Necessary. Allows us to drop.
 			}
@@ -154,7 +153,7 @@
 		},
 
 		handleDragEnd : function() {
-			console.log('end');
+			//console.log('end');
 			$.each($('.addTurtle'), function() {
 				$(this).css('visibility', 'collapse');
 			});
@@ -168,26 +167,19 @@
 	// MODEL
 	App.Models.Turtle = Backbone.Model.extend({
 		initialize : function() {
-			console.log("Welcome to this world");
+			//console.log("Welcome to this world");
 		}
 	});
 
 	// COLLECTION
 	App.Collections.Turtles = Backbone.Collection.extend({
 		model : App.Models.Turtle,
-		url : 'http://localhost/backendAdmin/index.php/controller/turtles/9',
-		init : function() {
-			console.log('length collection ' + this.length);
-			/*
-			 * for(x in this.models){ if(this.models[x].get('order') == 0)
-			 * this.models[x].set({}) }
-			 */
-		},
-		initialize : function() {
+		//url :'http://localhost/backendAdmin/index.php/controller/turtles/'+this.screen.get('screenid'),
+		initialize : function(options) {
 			this._order_by_id = this.comparator;
-			_.bindAll(this, 'init');
-			this.bind('reset', this.init);
-			console.log('length collection' + this.length);
+			
+			
+			this.url = 'http://localhost/backendAdmin/index.php/controller/turtles/'+options.screen.get('screenid');
 		},
 		comparator : function(model) {
 			return model.get('group') * 100 + model.get('order');
@@ -198,13 +190,16 @@
 	App.Views.Turtles = Backbone.View.extend({
 		el : '#appScreen',
 
-		initialize : function() {
+		initialize : function(options) {
 			_.bindAll(this, "render");
 			// refresh view when collection changes. Is needed because fetch is
 			// async
 			this.collection.bind("reset", this.render);
 			this.collection.bind('add', this.render);
 			this.collection.bind('change', this.render);
+			
+			
+			this.screen = options.screen;
 
 			var self = this;
 			if (this.template == null) {
@@ -235,12 +230,12 @@
 
 				// notify listeners render completed and pass element
 				this.trigger("rendered", this.$el);
-				console.log(this.collection.length);
+				//console.log(this.collection.length);
 
 				$
 						.each($('.addTurtle'),
 								function() {
-									console.log('events');
+									//console.log('events');
 									var el = $(this).get(0);
 									el.addEventListener('dragover',
 											self.handleDragOver, false);
@@ -250,7 +245,7 @@
 				$
 						.each($('.turtle'),
 								function() {
-									console.log('events');
+									//console.log('events');
 									var el = $(this).get(0);
 									el.addEventListener('dragstart',
 											self.handleDragStart, false);
@@ -266,7 +261,7 @@
 
 		handleDragStart : function(e) {
 			// Target (this) element is the source node.
-			console.log('drag');
+			//console.log('drag');
 
 			$(this).css('opacity', '0.4');
 
@@ -284,7 +279,7 @@
 		},
 
 		handleDragEnd : function() {
-			console.log('end');
+			//console.log('end');
 			$(this).css('opacity', '1');
 			$.each($('.addTurtle'), function() {
 				$(this).css('visibility', 'visible');
@@ -292,7 +287,7 @@
 		},
 
 		handleDragOver : function(e) {
-			console.log($(this).attr('id'));
+			//console.log($(this).attr('id'));
 			if (e.preventDefault) {
 				e.preventDefault(); // Necessary. Allows us to drop.
 			}
@@ -310,11 +305,11 @@
 			}
 			if ($(this).hasClass('addTurtle')
 					&& $(dragSrcEl).hasClass('module')) {
-				console.log('drop');
+				//console.log('drop');
 				var alias = $(dragSrcEl).attr('id');
 				var pos = parseInt($(this).attr('id').replace('add', ''));
-				console.log(alias);
-				console.log(pos);
+				//console.log(alias);
+				//console.log(pos);
 				var size = 0;
 				var turtlesJSON = turtles.toJSON();
 				for (x in turtlesJSON) {
@@ -335,7 +330,7 @@
 					"colspan" : 1
 				};
 				turtles.add(turtle);
-				console.log(turtles.toJSON());
+				//console.log(turtles.toJSON());
 			} else if ($(this).hasClass('turtle')) {
 				var first, second;
 				var thisEl = this;
@@ -361,7 +356,7 @@
 					colspan : model1JSON.colspan
 				});
 
-				console.log(turtles.toJSON());
+				//console.log(turtles.toJSON());
 			} else if ($(this).hasClass('addTurtle')
 					&& $(dragSrcEl).hasClass('turtle')) {
 				var group = parseInt($(this).attr('id').replace('add', ''));
@@ -380,68 +375,178 @@
 			turtles.sort();
 		}
 	});
-
+	
+	/*
+	 * user model
+	 */
+	App.Models.User = Backbone.Model.extend({
+		url : 'http://localhost/backendAdmin/index.php/controller/user'
+	});
+	
 	/*
 	 * SCREENEDITOR VIEW
 	 */
 
 	App.Views.ScreenEditor = Backbone.View.extend({
-		el : 'body',
+		el : $('body'),
 
-		initialize : function() {
-			console.log("Alerts suck.");
+		initialize : function(options) {
+			//console.log("Alerts suck.");
 			_.bindAll(this, "render");
-
+			this.model.bind("change", this.render);
+			this.model.bind("reset", this.render);
+			this.model.bind("add", this.render);
+			
+			this.screen =  options.screen;
+			
 			var self = this;
 			if (this.template == null) {
 				$.get("structurescreeneditor.html", function(template) {
 					self.template = template;
 					self.render();
-					console.log('hello');
-
-					turtles = new App.Collections.Turtles();
-					turtles.fetch();
-					view = new App.Views.Turtles({
-						collection : turtles
-					});
-
-					modules = new App.Collections.Modules();
-					modules.fetch();
-					view2 = new App.Views.Modules({
-						collection : modules
-					});
 				});
 			}
 		},
 		render : function() {
+			//alert(this.model.get('username'));
 			var self = this;
 			if (this.template) {
-				var data = {};
+				var data = {
+						username: this.model.get('username')
+				};
 
 				// add html to container
 				this.$el.html($.tmpl(this.template, data));
+				
+				
+				console.log(this.screen.toJSON());	
+				//rendered!!
+				turtles = new App.Collections.Turtles({screen : this.screen});
+				turtles.fetch();
+				view = new App.Views.Turtles({
+					collection : turtles,
+					screen : this.screen
+				});
+				
 
+				modules = new App.Collections.Modules();
+				modules.fetch();
+				view2 = new App.Views.Modules({
+					collection : modules
+				});
+
+			}
+		},
+		events: {
+			'click #logout' : 'logout'
+		},
+		logout: function() {
+			$.ajax({
+                url : 'http://localhost/backendAdmin/index.php/controller/logout',
+                type : "GET",
+                success : function(data, textStatus, xhr) {
+                	//console.log('success');
+                    //console.log(xhr.status + ' ' + textStatus);
+                    username = data;
+                    appRouter.navigate("", {trigger: true, replace: true});
+                },
+                error : function(xhr, ajaxOptions, thrownError) {
+                	//console.log('fail');
+                    //console.log(xhr.status);
+                }
+            });
+		}
+	});
+	
+	/*
+	 * SCREENS
+	 */
+	
+	/*
+	 * MODEL
+	 */
+	App.Models.Screen = Backbone.Model.extend({
+	});
+	
+	/*
+	 * COLLECTION
+	 */
+	App.Collections.Screens = Backbone.Collection.extend({
+		model: App.Models.Screen,
+		url : 'http://localhost/backendAdmin/index.php/controller/screens'
+	});
+	
+	App.Views.Screens = Backbone.View.extend({
+		el: 'body',
+		initialize: function(){
+			_.bindAll(this, "render");
+			this.model.bind("change", this.render);
+			this.model.bind("reset", this.render);
+			this.model.bind("add", this.render);
+			this.collection.bind("change", this.render);
+			this.collection.bind("reset", this.render);
+			this.collection.bind("add", this.render);
+			
+			var self = this;
+			if (this.template == null) {
+				$.get("screens.html", function(template) {
+					self.template = template;
+					self.render();
+				});
+			}
+		},
+		render : function(){
+			var self = this;
+			if (this.template) {
+				var data = {
+						screens : this.collection.models,
+						username: this.model.get('username')
+				};
+
+				// add html to container
+				this.$el.html($.tmpl(this.template, data));
+				
+				$('.screenbtn').click(function(){
+					var model = self.collection.getByCid($(this).attr('id'));
+					appRouter.navigate("screeneditor/"+model.get('id'), {trigger: true, replace: true});
+				});
 			}
 		}
 	});
-
+	
 	/*
 	 * ROUTER
 	 */
 	var Router = Backbone.Router.extend({
 		routes : {
-			'login' : 'login',
-			'screeneditor' : 'defaultRoute'
+			'' : 'loginRoute',
+			'screens' : 'screensRoute',
+			'screeneditor/:screenid' : 'defaultRoute'
 		},
 
-		defaultRoute : function() {
-			console.log('defaultRoute');
-			var screenEditorView = new App.Views.ScreenEditor({});
+		defaultRoute : function(screenid) {
+			user = new App.Models.User();
+			screen = new App.Models.Screen({screenid : screenid});
+			user.fetch({error: function(){
+				appRouter.navigate("", {trigger: true, replace: true});
+			}});
+			var screenEditorView = new App.Views.ScreenEditor({model : user , screen :  screen});
 		},
-		login : function() {
-			console.log('login');
+		loginRoute : function() {
 			var loginView = new App.Views.Login({});
-		}
+		},
+		screensRoute: function(){
+			//alert(screenid);
+			screens = new App.Collections.Screens();
+			screens.fetch({error: function(){
+				appRouter.navigate("", {trigger: true, replace: true});
+			}});
+			user = new App.Models.User();
+			user.fetch({error: function(){
+				appRouter.navigate("", {trigger: true, replace: true});
+			}});
+			var screensView = new App.Views.Screens({collection : screens,model:user});
+		},
 	});
 
 	var appRouter = new Router();

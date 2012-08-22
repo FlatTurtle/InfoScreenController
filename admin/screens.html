@@ -22,34 +22,9 @@
     </div>
 </div><!--navbar-->
 <div class="container-fluid">
-    <div class="row-fluid">
-        <div class="span2" id="appModules" style="background-color:#0480BE"></div>
-        <div class="span8" id ="appScreen" style="">
-            <!--<div class="row-fluid" id="screen" style="width: 100%;height: 50%;background-color:#FBB450">-->
-
-            <!--</div>-->
-        </div>
-        <div class="span2" style="background-color:#0480BE">
-            <ul>
-                <li>
-                    task1
-                </li>
-                <li>
-                    task2
-                </li>
-                <li>
-                    task3
-                </li>
-                <li>
-                    task4
-                </li>
-                <li>
-                    task5
-                </li>
-                <li>
-                    task6
-                </li>
-            </ul>
-        </div>
+    {{each screens}}
+    <div class="screen" style="margin: 5px">
+        <a class="btn btn-primary screenbtn" href="javascript:void(0)" id=${$value.cid}>${ $value.get("alias") }</a>
     </div>
+    {{/each}}
 </div>
