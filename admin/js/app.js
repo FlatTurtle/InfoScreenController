@@ -135,7 +135,11 @@
 			e.dataTransfer.setData('text/html', this.innerHTML);
 
 			$.each($('.addTurtle'), function() {
-				$(this).css('visibility', 'visible');
+				$(this).css('display', 'inline');
+			});
+			
+			$.each($('.newColumn'), function() {
+				$(this).css('display', 'inline');
 			});
 
 		},
@@ -155,9 +159,13 @@
 		handleDragEnd : function() {
 			//console.log('end');
 			$.each($('.addTurtle'), function() {
-				$(this).css('visibility', 'collapse');
+				$(this).css('display', 'none');
 			});
 			$(this).css('opacity', '1');
+			
+			$.each($('.newColumn'), function() {
+				$(this).css('display', 'none');
+			});
 		}
 	});
 
@@ -199,7 +207,6 @@
 			this.collection.bind('change', this.render);
 			
 			
-			this.screen = options.screen;
 
 			var self = this;
 			if (this.template == null) {
@@ -235,7 +242,7 @@
 				$
 						.each($('.addTurtle'),
 								function() {
-									//console.log('events');
+									// console.log('events');
 									var el = $(this).get(0);
 									el.addEventListener('dragover',
 											self.handleDragOver, false);
@@ -245,36 +252,57 @@
 				$
 						.each($('.turtle'),
 								function() {
-									//console.log('events');
-									var el = $(this).get(0);
-									el.addEventListener('dragstart',
+									//var el = $(this).get(0);
+									this.addEventListener('dragstart',
 											self.handleDragStart, false);
-									el.addEventListener('dragover',
+									this.addEventListener('dragover',
 											self.handleDragOver, false);
-									el.addEventListener('dragend',
+									this.addEventListener('dragend',
 											self.handleDragEnd, false);
-									el.addEventListener('drop',
+									this.addEventListener('drop',
 											self.handleDrop, false);
 								});
+				$
+				.each($('.newColumn'),
+						function() {
+							//console.log('events');
+							var el = $(this).get(0);
+							el.addEventListener('dragover',
+									self.handleDragOver, false);
+							el.addEventListener('drop',
+									self.handleDrop, false);
+						});
+				$('.turtle').click(function(){
+					var model = self.collection.getByCid($(this).attr('id'));
+					for(x in self.collection.models){
+						if(self.collection.models[x].get('group') == model.get('group')) self.collection.models[x].set({selected : false});
+					}
+					model.set({selected : true});
+					
+				});
+				
 			}
 		},
 
 		handleDragStart : function(e) {
 			// Target (this) element is the source node.
-			//console.log('drag');
-
-			$(this).css('opacity', '0.4');
+			console.log('drag');
+			console.log(this);
+			//$(this).css('opacity', '0.4');
 
 			dragSrcEl = this;
 
-			e.dataTransfer.effectAllowed = 'move';
-			e.dataTransfer.setData('text/html', this.innerHTML);
+			//e.dataTransfer.effectAllowed = 'move';
+			//e.dataTransfer.setData('text/html', this.innerHTML);
 
 			var turtleModel = turtles.getByCid($(this).attr('id'));
 			$.each($('.addTurtle'), function() {
-				if ($(this).attr('id').replace('add', '') != turtleModel
+				if (parseInt($(this).attr('id').replace('add', '')) != turtleModel
 						.get('group'))
-					$(this).css('visibility', 'visible');
+					$(this).css('display', 'inline');
+			});
+			$.each($('.newColumn'), function() {
+				$(this).css('display', 'inline');
 			});
 		},
 
@@ -282,7 +310,10 @@
 			//console.log('end');
 			$(this).css('opacity', '1');
 			$.each($('.addTurtle'), function() {
-				$(this).css('visibility', 'visible');
+				$(this).css('display', 'none');
+			});
+			$.each($('.newColumn'), function() {
+				$(this).css('display', 'none');
 			});
 		},
 
@@ -291,6 +322,7 @@
 			if (e.preventDefault) {
 				e.preventDefault(); // Necessary. Allows us to drop.
 			}
+			
 
 			e.dataTransfer.dropEffect = 'move'; // See the section on the
 			// DataTransfer object.
@@ -303,6 +335,8 @@
 			if (e.stopPropagation) {
 				e.stopPropagation(); // Stops some browsers from redirecting.
 			}
+		    e.preventDefault();
+		    
 			if ($(this).hasClass('addTurtle')
 					&& $(dragSrcEl).hasClass('module')) {
 				//console.log('drop');
@@ -359,17 +393,30 @@
 				//console.log(turtles.toJSON());
 			} else if ($(this).hasClass('addTurtle')
 					&& $(dragSrcEl).hasClass('turtle')) {
-				var group = parseInt($(this).attr('id').replace('add', ''));
+				var group = $(this).attr('id').replace('add', '');
 				var turtle = turtles.getByCid($(dragSrcEl).attr('id'));
 				var arrayGroup = turtles.where({
 					group : group
 				});
+				console.log(turtles.toJSON());
 				var groupSize = arrayGroup.length;
 				var colspan = arrayGroup[0].get('colspan');
 				turtle.set({
 					group : group,
 					order : groupSize,
 					colspan : colspan
+				});
+			} else if($(this).hasClass('newColumn') && $(dragSrcEl).hasClass('turtle')){
+				var turtle = turtles.getByCid($(dragSrcEl).attr('id'));
+				var groupAmount = 0;
+				for(x in turtles.models){
+					if(turtles.models[x].get('group') > groupAmount) groupAmount = turtles.models[x].get('group');
+				}
+				groupAmount++;
+				turtle.set({
+					group : groupAmount,
+					order : 0,
+					colspan : 1
 				});
 			}
 			turtles.sort();
@@ -422,10 +469,15 @@
 				console.log(this.screen.toJSON());	
 				//rendered!!
 				turtles = new App.Collections.Turtles({screen : this.screen});
-				turtles.fetch();
+				turtles.fetch({success: function(){
+					for(x in turtles.models){
+						if(turtles.models[x].get('order') == '0') turtles.models[x].set({selected: true});
+						else turtles.models[x].set({selected: false});
+					}
+					console.log(turtles.toJSON());
+				}});
 				view = new App.Views.Turtles({
-					collection : turtles,
-					screen : this.screen
+					collection : turtles
 				});
 				
 

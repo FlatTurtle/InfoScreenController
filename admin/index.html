@@ -4,12 +4,23 @@
         <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
         <style>
             .turtle.selected {
-                background-color: black;
+                background-color: green;
+            }
+            [draggable] {
+                -moz-user-select: none;
+                -khtml-user-select: none;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+            .turtle {
+                cursor: move;
+            }
+            .module  {
+                cursor: move;
             }
         </style>
     </head>
     <body>
-        
 
     </body>
     <script src="js/libs/jquery.js" type="text/javascript"></script>
