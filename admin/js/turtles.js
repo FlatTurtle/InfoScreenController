@@ -13,15 +13,14 @@ Turtles.Model = Backbone.Model.extend({
 Turtles.Collection = Backbone.Collection
 		.extend({
 			model : Turtles.Model,
-			//url :'http://localhost/backendAdmin/index.php/controller/turtles/'+this.screen.get('screenid'),
 			initialize : function(options) {
 				this._order_by_id = this.comparator;
-
 				this.url = 'http://localhost/backendAdmin/index.php/controller/turtles/'
-						+ options.screen.get('screenid');
+						+ options.screenid;
+				this.screenid = options.screenid;
 			},
 			comparator : function(model) {
-				return model.get('group') * 100 + model.get('order');
+				return model.get('order');
 			}
 		});
 
@@ -36,6 +35,9 @@ Turtles.View = Backbone.View.extend({
 		this.collection.bind("reset", this.render);
 		this.collection.bind('add', this.render);
 		this.collection.bind('change', this.render);
+		
+		Turtles.modules = options.modules;
+		Turtles.turtles = options.collection;
 
 		var self = this;
 		if (this.template == null) {
@@ -50,11 +52,11 @@ Turtles.View = Backbone.View.extend({
 		//alert(this.el.toJSON());
 		var self = this;
 		if (this.template) {
-			var turtles = this.collection.toJSON();
+			var turtles = Turtles.turtles;
 			var colCount = 0;
-			for (x in turtles) {
-				if (turtles[x].group > colCount)
-					colCount = turtles[x].group;
+			for (x in turtles.models) {
+				if (turtles.models[x].get('group') > colCount)
+					colCount = turtles.models[x].get('group');
 			}
 			var data = {
 				turtles : this.collection.models,
@@ -107,14 +109,30 @@ Turtles.View = Backbone.View.extend({
 						});
 
 					});
+			/*$.each($('.column'),function(){
+				var airportModule = application.module('airport');
+				var collection = new airportModule.Collection({},{location: 'BRU'});
+				collection.fetch();
+				var view = new airportModule.View({collection : collection});
+				view.setElement($(this));
+			})*/
+			
+			var editscreenModule = application.module('editscreen');
+			var editscreen = new editscreenModule.Model();
+			editscreen.fetch({data : {screenid : this.collection.screenid},success:function(){
+				//console.log(editscreen.toJSON());
+			}});
+			//console.log(editscreen.get('title'));
+			var editscreenView = new editscreenModule.View({model: editscreen});
 
 		}
 	},
 
 	handleDragStart : function(e) {
+		var turtles = Turtles.turtles;
 		// Target (this) element is the source node.
-		console.log('drag');
-		console.log(this);
+		//console.log('drag');
+		//console.log(this);
 		//$(this).css('opacity', '0.4');
 
 		dragSrcEl = this;
@@ -156,6 +174,8 @@ Turtles.View = Backbone.View.extend({
 		return false;
 	},
 	handleDrop : function(e) {
+		var turtles = Turtles.turtles;
+		var modules = Turtles.modules;
 		// this/e.target is current target element.
 		// alert(this.id);
 		if (e.stopPropagation) {
@@ -164,32 +184,49 @@ Turtles.View = Backbone.View.extend({
 		e.preventDefault();
 
 		if ($(this).hasClass('addTurtle') && $(dragSrcEl).hasClass('module')) {
-			//console.log('drop');
-			var alias = $(dragSrcEl).attr('id');
+			var module = modules.getByCid($(dragSrcEl).attr('id'));
 			var pos = parseInt($(this).attr('id').replace('add', ''));
-			//console.log(alias);
-			//console.log(pos);
-			var size = 0;
-			var turtlesJSON = turtles.toJSON();
-			for (x in turtlesJSON) {
-				if (turtlesJSON[x].group == pos)
-					size++;
-			}
-			var module;
-			var modulesJSON = modules.toJSON();
-			for (x in modulesJSON) {
-				if (modulesJSON[x].alias == alias)
-					module = modulesJSON[x];
-			}
+			var size = turtles.where({group: pos}).length;
 			var turtle = {
-				"alias" : alias,
-				"image" : module.image,
+				"module_alias" : module.get('alias'),
+				"image" : module.get('image'),
 				"group" : pos,
 				"order" : size,
+				"screen_id": turtles.screenid, 
 				"colspan" : 1
 			};
 			turtles.add(turtle);
-			//console.log(turtles.toJSON());
+			$.ajax({
+				url : 'http://localhost/backendAdmin/index.php/controller/turtle',
+				type : 'POST',
+				data : {
+					turtle: turtle
+				},
+				success : function(data, textStatus, xhr) {
+					console.log(turtle);
+					console.log('success');
+					//console.log(xhr.status + ' ' + textStatus);
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					console.log('fail');
+					console.log(xhr.status);
+				}
+			});
+			//fetching turtles
+			turtles.fetch({
+				success : function() {
+					for (x in turtles.models) {
+						if (turtles.models[x].get('order') == 0)
+							turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:true});
+						else
+							turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:false});
+					}
+					console.log(turtles.toJSON());
+				}
+			});
+			
+			
+			
 		} else if ($(this).hasClass('turtle')) {
 			var first, second;
 			var thisEl = this;
@@ -205,25 +242,32 @@ Turtles.View = Backbone.View.extend({
 			var model1JSON = model1.toJSON();
 
 			turtles.getByCid($(this).attr('id')).set({
-				group : model2.toJSON().group,
-				order : model2.toJSON().order,
-				colspan : model2.toJSON().colspan
+				group : model2.get('group'),
+				order : model2.get('order'),
+				colspan : model2.get('colspan'),
+				selected: model2.get('selected')
 			});
 			turtles.getByCid($(dragSrcEl).attr('id')).set({
 				group : model1JSON.group,
 				order : model1JSON.order,
-				colspan : model1JSON.colspan
+				colspan : model1JSON.colspan,
+				selected: model1JSON.selected
 			});
 
 			//console.log(turtles.toJSON());
 		} else if ($(this).hasClass('addTurtle')
 				&& $(dragSrcEl).hasClass('turtle')) {
-			var group = $(this).attr('id').replace('add', '');
+			var group = parseInt($(this).attr('id').replace('add', ''));
 			var turtle = turtles.getByCid($(dragSrcEl).attr('id'));
 			var arrayGroup = turtles.where({
 				group : group
 			});
-			console.log(turtles.toJSON());
+			//console.log(turtles.toJSON());
+			var originalGroupSize = turtles.where({
+				group : turtle.get('group')
+			}).length;
+			var originalGroupNumber = turtle.get('group');
+			
 			var groupSize = arrayGroup.length;
 			var colspan = arrayGroup[0].get('colspan');
 			turtle.set({
@@ -231,9 +275,27 @@ Turtles.View = Backbone.View.extend({
 				order : groupSize,
 				colspan : colspan
 			});
+			
+			
+			if(originalGroupSize == 1){
+				for(x in turtles.models){
+					var groupnr = turtles.models[x].get('group');
+					var groupnr = groupnr - 1;
+					if(turtles.models[x].get('group') > originalGroupNumber) turtles.models[x].set({group : groupnr});
+				}
+			}
+			for(x in turtles.models){
+				console.log(turtles.models[x].toJSON());
+			}
 		} else if ($(this).hasClass('newColumn')
 				&& $(dragSrcEl).hasClass('turtle')) {
 			var turtle = turtles.getByCid($(dragSrcEl).attr('id'));
+			
+			var originalGroupSize = turtles.where({
+				group : turtle.get('group')
+			}).length;
+			var originalGroupNumber = turtle.get('group');
+			
 			var groupAmount = 0;
 			for (x in turtles.models) {
 				if (turtles.models[x].get('group') > groupAmount)
@@ -243,10 +305,66 @@ Turtles.View = Backbone.View.extend({
 			turtle.set({
 				group : groupAmount,
 				order : 0,
-				colspan : 1
+				colspan : 1,
+				selected:true
 			});
+			
+			if(originalGroupSize == 1){
+				for(x in turtles.models){
+					var groupnr = turtles.models[x].get('group');
+					var groupnr = groupnr - 1;
+					if(turtles.models[x].get('group') > originalGroupNumber) turtles.models[x].set({group : groupnr});
+				}
+			}
 		}
 		turtles.sort();
+		for(x in turtles.models){
+			console.log(turtles.models[x].toJSON());
+		}
+		for(x in turtles.models){
+			var group = turtles.where({group: turtles.models[x].get('group')});
+			var groupSelected = turtles.where({selected: true,group: turtles.models[x].get('group')});
+			if(groupSelected.length == 0){
+				group[0].set({selected:true});
+			}
+			else if(groupSelected.length > 1){
+				for(var i=1;i<groupSelected.length;i++) groupSelected[i].set({selected : false});
+			}
+			for(y in group){
+				group[y].set({order: y});
+			}
+		}
+		turtles.sort();
+		
+		if(!$(dragSrcEl).hasClass('module')){
+			
+		//save to database
+		$.ajax({
+			url : 'http://localhost/backendAdmin/index.php/controller/turtles',
+			type : 'POST',
+			data : {
+				turtles: turtles.toJSON()
+			},
+			success : function(data, textStatus, xhr) {
+				console.log(turtles.toJSON());
+				console.log('success');
+				//console.log(xhr.status + ' ' + textStatus);
+			},
+			error : function(xhr, ajaxOptions, thrownError) {
+				console.log('fail');
+				console.log(xhr.status);
+			}
+		});
+		}
+	}
+});
+Turtles.Router = Backbone.Router.extend({
+	routes : {
+		'' : 'loginRoute'
+	},
+	loginRoute : function() {
+		var loginModule = application.module('login');
+		var loginView = new loginModule.View();
 	}
 });
 })(application.module("turtles"));

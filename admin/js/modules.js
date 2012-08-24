@@ -14,10 +14,11 @@ Modules.Collection = Backbone.Collection.extend({
 // VIEW
 Modules.View = Backbone.View.extend({
 	el : '#appModules',
-	initialize : function() {
+	initialize : function(options) {
 		_.bindAll(this, "render");
 		this.collection.bind("reset", this.render);
 		var self = this;
+		
 		if (this.template == null) {
 			$.get("modules.html", function(template) {
 				self.template = template;
@@ -29,7 +30,7 @@ Modules.View = Backbone.View.extend({
 		var self = this;
 		if (this.template) {
 			var data = {
-				modules : this.collection.toJSON()
+				modules : this.collection.models
 			};
 			// add html to container
 			this.$el.html($.tmpl(this.template, data));

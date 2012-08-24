@@ -10,18 +10,16 @@
 		},
 
 		defaultRoute : function(screenid) {
-			var self = this;
-			
 			var userModule = application.module('user');
 			var screenModule = application.module('screens');
 			var user = new userModule.Model();
-			var screen = new screenModule.Model({
+			/*var screen = new screenModule.Model({
 				screenid : screenid
-			});
-
+			});*/
+			
 			user.fetch({
 				error : function() {
-					navigate("", {
+					appRouter.navigate("", {
 						trigger : true,
 						replace : true
 					});
@@ -30,7 +28,7 @@
 			var screeneditorModule = application.module('screeneditor');
 			var screenEditorView = new screeneditorModule.View({
 				model : user,
-				screen : screen
+				screenid : screenid
 			});
 		},
 		loginRoute : function() {

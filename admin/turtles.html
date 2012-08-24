@@ -1,11 +1,19 @@
-<table style="height:400px;width:100%;text-align:center;background-color:#0480BE">
+<div id="header"></div>
+<table style="height:500px;width:100%;text-align:center;background-color:#0480BE">
     <tr>
         {{for(var i=0;i<columns;i++)}}
         <td width={{= 100*1./columns+"%"}}>
-        <div style="border:2px dashed #000;height:300px;"/>
         {{each turtles}}
-        {{if $value.toJSON().group == (i+1)}}
-        {{if $value.toJSON().selected == true}}
+        {{if $value.get("group") == (i+1)}}
+        {{if $value.get("selected") == true}}
+        <div class="column" style="height:300px;border:2px dashed #000;">${$value.get("alias")}</div>
+        {{/if}}
+        {{/if}}
+        {{/each}}
+        {{each turtles}}
+        {{if $value.get("group") == (i+1)}}
+        {{if $value.get("selected") == true}}
+        
         <div style="width:100px;height:100px;float:left;margin: 5px" draggable="true" class="turtle selected" id=${$value.cid}>
             <div style="">${$value.get("alias")}</div>
             <img style="width:36px;height:45px;" src=${$value.toJSON().image}>

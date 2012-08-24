@@ -1,0 +1,44 @@
+<style type="text/css">
+#outer {width: 100%; height: 880px; overflow: hidden; position: relative; text-align: center; 
+	margin-left: auto;
+	margin-right: auto;}
+#outer[id] {display: table; position: static;}
+
+#middle {position: absolute; top: 50%; }
+#middle[id] {display: table-cell; vertical-align: middle; width: 100%;}
+
+#inner {position: relative; width: 100%; top: -50%; text-align: center;} 
+</style>
+<h2>
+<!--	<img src="turtles/feedback/flatturtle.png" alt="" height="28px" />-->
+	<!--<small>Feedback</small>-->
+	<span class="credits">moved by <em>FlatTurtle</em></span>
+</h2>
+
+<h3 class="color"><span></span></h3>
+
+<div id="outer">
+  <div id="middle">
+    <div id="inner">
+      <p>FlatTurtle is a start-up in <i>real-time</i> digital signage. This is the first demo of what our product will be like.<br>Has this display been useful to you? Drop us a line at <strong>feedback@FlatTurtle.com</strong>.</p>
+      <p id="demonotice">
+        This demo will be available for <strong id="demodays"></strong> more days.
+      </p>
+      <script>
+        var dnow = new Date();
+        var difference = 27 - dnow.getDate();
+        if(difference <= 0 || dnow.getMonth() != "5"){
+            $(demonotice).html("Your demo expired. A FlatTurtle employee is going to pick-up this demo any time now and install it elsewhere. If you would like to install FlatTurtle at your location, please contact sales@flatturtle.com.");
+        }else{
+            $(demodays).html(difference);
+        }
+      </script>
+      <p>
+        <img src="http://img.flatturtle.com/flatturtle/logo/FlatTurtle-slogan.png" height="150px" alias="FlatTurtle"/><br/>
+        feedback@FlatTurtle.be<br/>
+        <small>&copy 2012 FlatTurtle<br/>
+        Some rights reserved</small>
+      </p>
+    </div>
+  </div>
+</div>

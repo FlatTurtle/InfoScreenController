@@ -12,7 +12,8 @@ Screeneditor.View = Backbone.View.extend({
 		this.model.bind("reset", this.render);
 		this.model.bind("add", this.render);
 
-		this.screen = options.screen;
+		this.screenid = options.screenid;
+		console.log(this.screenid);
 
 		var self = this;
 		if (this.template == null) {
@@ -34,35 +35,35 @@ Screeneditor.View = Backbone.View.extend({
 			this.$el.html($.tmpl(this.template, data));
 
 			//rendered!!
-			var turtlesModule = application.module('turtles');
-			turtles = new turtlesModule.Collection({
-				screen : this.screen
-			});
-			turtles.fetch({
-				success : function() {
-					for (x in turtles.models) {
-						if (turtles.models[x].get('order') == '0')
-							turtles.models[x].set({
-								selected : true
-							});
-						else
-							turtles.models[x].set({
-								selected : false
-							});
-					}
-					console.log(turtles.toJSON());
-				}
-			});
-			view = new turtlesModule.View({
-				collection : turtles
-			});
+			//render modules
 			var modulesModule = application.module('modules');
 			var modules = new modulesModule.Collection();
 			modules.fetch();
 			view2 = new modulesModule.View({
 				collection : modules
 			});
-
+			
+			//render turtles
+			var turtlesModule = application.module('turtles');
+			var turtles = new turtlesModule.Collection({
+				screenid : this.screenid
+			});
+			turtles.fetch({
+				success : function() {
+					for (x in turtles.models) {
+						if (turtles.models[x].get('order') == 0)
+							turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:true});
+						else
+							turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:false});
+					}
+					console.log(turtles.toJSON());
+				}
+			});
+			view = new turtlesModule.View({
+				collection : turtles,
+				modules: modules
+			});
+			
 		}
 	},
 	events : {

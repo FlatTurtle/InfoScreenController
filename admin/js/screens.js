@@ -5,7 +5,9 @@
 	/*
 	 * MODEL
 	 */
-	Screens.Model = Backbone.Model.extend({});
+	Screens.Model = Backbone.Model.extend({
+		
+	});
 
 	/*
 	 * COLLECTION
@@ -67,9 +69,9 @@
 			var userModule = application.module('user');
 			var screenModule = application.module('screens');
 			var user = new userModule.Model();
-			var screen = new screenModule.Model({
+			/*var screen = new screenModule.Model({
 				screenid : screenid
-			});
+			});*/
 			
 			user.fetch({
 				error : function() {
@@ -82,7 +84,7 @@
 			var screeneditorModule = application.module('screeneditor');
 			var screenEditorView = new screeneditorModule.View({
 				model : user,
-				screen : screen
+				screenid : screenid
 			});
 		},
 		loginRoute : function() {

@@ -1,0 +1,59 @@
+<h2>
+	<img src="turtles/nmbs/train.png" height="28px" alt="NMBS/SNCB"> 
+	{{if direction == 'departures'}}
+	<small>${i18n.departures}</small>
+	{{else}}
+	<small>${i18n.arrivals}</small>
+	{{/if}}
+	<span class="credits">moved by <em>FlatTurtle</em></span>
+</h2>
+
+<h3 class="color"><span>${station}</span></h3>
+
+<table>
+	<tbody>
+		{{if entries.length}}
+			{{each entries}}
+				<tr>
+					{{if $value.delay}}
+					<td class="time delayed">
+						${$value.time}
+						<em>${$value.delay}</em>
+					</td>
+					{{else}}
+					<td class="time">
+						${$value.time}
+					</td>
+					{{/if}}
+					<td width="40" class="label">
+					  <span>
+					  	${$value.platform.name}
+					  </span>
+					</td>
+					<td width="40" class="label">
+                      <span>
+                        ${$value.type}
+                      </span>
+                    </td>
+					<td class="text">
+						<span>
+						${$value.direction}
+						</span>
+					</td>
+				</tr>
+			{{/each}}
+		{{else error}}
+			<tr>
+				<td>
+					<span class="error">Unable to contact the server.</span>
+				</td>
+			</tr>
+		{{else}}
+			<tr>
+				<td>
+					<span class="error">No trains available.</span>
+				</td>
+			</tr>
+		{{/if}}
+	</tbody>
+</table>

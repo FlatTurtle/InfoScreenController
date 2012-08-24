@@ -1,0 +1,58 @@
+<h2>
+	<img src="turtles/delijn/bus.png" alt="De Lijn" height="28px"> 
+	<span class="credits">moved by <em>FlatTurtle</em></span>
+</h2>
+
+<h3 class="color"><span>Velo</span></h3>
+
+<style>
+    .turtle td {    
+        font-size: 20px;
+    }
+</style>
+
+<table>
+	<tbody>
+        {{if entries.length}}
+			{{each entries}}
+                <tr>
+                    <td class="icon-amount available">
+                        <img src="turtles/villo/bike.png" />
+                        <span class="amount">
+                            ${$value.freebikes}
+                        </span>
+                    </td>
+                    <td class="icon-amount parked">
+                        <img src="turtles/villo/parked.png" />
+                        <span class="amount">
+                            ${$value.freespots}
+                        </span>
+                    </td>
+                    <td class="icon-amount distance">
+                        <img src="turtles/villo/walk.png" />
+                        <span class="amount">
+                            ${$value.distance}m
+                        </span>
+                    </td>
+                    <td class="stationname">
+                        <span>
+                            ${$value.name}
+                        </span>
+                    </td>
+                </tr>
+            {{/each}}
+		{{else error}}
+            <tr>
+				<td>
+					<span class="error">Unable to contact the server.</span>
+				</td>
+			</tr>
+		{{else}}
+			<tr>
+				<td>
+					<span class="error">No Villo stations available.</span>
+				</td>
+			</tr>
+		{{/if}}
+	</tbody>
+</table>

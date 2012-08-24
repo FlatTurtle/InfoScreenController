@@ -1,0 +1,23 @@
+<h2>
+	<img src="turtles/twitter/twitter.png" height="28px" alt="Twitter"> 
+	<small>${i18n.title}</small>
+	<span class="credits">moved by <em>FlatTurtle</em></span>
+</h2>
+
+<h3 class="color"><span>#${hashtag}</span></h3>
+
+<table>
+	<tbody>
+		{{each entries}}
+			<tr>
+				<td width="40">
+					<img src="${$value.profile_image_url}" height="40" width="40" />
+				</td>
+				<td class="small-text">
+					<strong>${$value.from_user}:</strong> {{html $value.text}}
+					<small> - ${$value.ago}</small>
+				</td>
+			</tr>
+		{{/each}}
+	</tbody>
+</table>
