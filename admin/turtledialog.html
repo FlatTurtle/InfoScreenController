@@ -11,16 +11,16 @@
                 {{if collection.indexOf($value) != 0 && collection.at(collection.indexOf($value)-1).get("value") != "editable"}}
                 </select>
                 {{/if}}
-                <div>${$value.get("key")}</div><input></input>
+                <div>${$value.get("key")}</div><input id=${$value.cid} class="turtleOption"></input>
             {{else}}
                 {{if $value.cid == collection.models[0].cid}}
                     <div>${$value.get("key")}</div>
-                    <select><option>${$value.get("value")}</option>
+                    <select id=${$value.get("key")}><option value=${$value.cid}>${$value.get("value")}</option>
                 {{else}}
                     {{if $value.get("key") == collection.at(collection.indexOf($value)-1).get("key")}}
-                    <option>${$value.get("value")}</option>
+                    <option value=${$value.cid}>${$value.get("value")}</option>
                     {{else}}
-                    </select><div> ${$value.get("key")}</div><select><option>${$value.get("value")}</option>
+                    </select><div> ${$value.get("key")}</div><select id=${$value.get("key")}><option value=${$value.cid}>${$value.get("value")}</option>
                     {{/if}}
                 {{/if}}
                 {{if collection.indexOf($value) == (collection.length-1)}}
@@ -31,6 +31,6 @@
     </div>
     <div class="modal-footer">
         <a href="javascript:void(0)" class="btn closebtn">close</a>
-        <a href="javascript:void(0)" class="btn btn-primary">Save changes</a>
+        <a href="javascript:void(0)" class="btn btn-primary savebtn">Save changes</a>
     </div>
 </div>

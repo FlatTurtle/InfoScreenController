@@ -62,16 +62,10 @@ Turtles.View = Backbone.View.extend({
 		var dialogCollection = new dialogModule.Collection();
 		
 		//fetch options for module
-		dialogCollection.fetch({data:{module_alias: model.get('module_alias')},success:function(){
-			for(x in dialogCollection.models){
-				if(x!=0 && dialogCollection.models[x].get('key') != dialogCollection.models[x-1].get('key')){
-					dialogCollection.models[x].set({same_key: false});
-				}
-				else dialogCollection.models[x].set({same_key:true});
-			}
-		}});
+		dialogCollection.fetch({data:{module_alias: model.get('module_alias')}});
 		
-		var dialogView = new dialogModule.View({collection: dialogCollection});
+		var dialogView = new dialogModule.View({collection: dialogCollection,model : model});
+		$('body').append(dialogView.el);
 	},
 
 	render : function() {
