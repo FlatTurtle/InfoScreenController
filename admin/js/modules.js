@@ -36,15 +36,11 @@
 				// add html to container
 				this.$el.html($.tmpl(this.template, data));
 
-				$.each($('.module'),
-						function() {
-							this.addEventListener('dragstart',
-									self.handleDragStart, false);
-							this.addEventListener('dragover',
-									self.handleDragOver, false);
-							this.addEventListener('dragend',
-									self.handleDragEnd, false);
-						});
+				$.each($('.module'),function() {
+					this.addEventListener('dragstart',self.handleDragStart, false);
+					this.addEventListener('dragover',self.handleDragOver, false);
+					this.addEventListener('dragend',self.handleDragEnd, false);
+				});
 
 				// notify listeners render completed and pass element
 				this.trigger("rendered", this.$el);

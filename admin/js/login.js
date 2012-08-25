@@ -7,6 +7,7 @@
 	var screensModule = application.module('screens');
 	var userModule = application.module('user');
 	var screensModule = application.module('screens');
+	var routerModule = applciation.module('router');
 
 	// VIEW
 	Login.View = Backbone.View
@@ -40,57 +41,22 @@
 					var name = $('#login').val();
 					var pass = $('#password').val();
 
-					$
-							.ajax({
-								url : 'http://localhost/backendAdmin/index.php/controller/login',
-								type : "POST",
-								data : {
-									name : name,
-									pass : pass
-								},
-								success : function(data, textStatus, xhr) {
-									console.log(xhr.status + ' ' + textStatus);
-									username = data;
-									new Login.Router().navigate("screens", {
-										trigger : true,
-									});
-								},
-								error : function(xhr, ajaxOptions, thrownError) {
-									console.log(xhr.status);
-								}
-							});
-				}
-			});
-
-	//ROUTER
-	Login.Router = Backbone.Router.extend({
-		routes : {
-			'screens' : 'screensRoute'
-		},
-		screensRoute : function() {
-
-			var screens = new screensModule.Collection();
-			screens.fetch({
-				error : function() {
-					new Login.Router().navigate("", {
-						trigger : true,
+					$.ajax({
+						url : 'http://localhost/backendAdmin/index.php/controller/login',
+						type : "POST",
+						data : {
+							name : name,
+							pass : pass
+						},
+						success : function(data, textStatus, xhr) {
+							console.log(xhr.status + ' ' + textStatus);
+							username = data;
+							new routerModule.Router().navigate("screens", {trigger : true});
+						},
+						error : function(xhr, ajaxOptions, thrownError) {
+							console.log(xhr.status);
+						}
 					});
 				}
 			});
-
-			var user = new userModule.Model();
-			user.fetch({
-				error : function() {
-					new Login.Router().navigate("", {
-						trigger : true,
-					});
-				}
-			});
-
-			var screensView = new screensModule.View({
-				collection : screens,
-				model : user
-			});
-		}
-	});
 })(application.module("login"));

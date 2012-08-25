@@ -6,7 +6,7 @@
 	// dependencies
 	Turtledialog.Model = Backbone.Model.extend({
 	});
-	
+
 	Turtledialog.Collection = Backbone.Collection.extend({
 		model: Turtledialog.Model,
 		url : 'http://localhost/backendAdmin/index.php/controller/options'
@@ -17,12 +17,12 @@
 			_.bindAll(this, "render");
 			_.bindAll(this, "close");
 			_.bindAll(this, "save");
-			
-			
+
+
 			this.collection.bind("reset", this.render);
 			this.collection.bind('add', this.render);
 			this.collection.bind('change', this.render);
-			
+
 			this.turtle_configs = options.turtle_configs;
 			var self = this;
 			if (this.template == null) {
@@ -36,7 +36,7 @@
 			console.log(this.turtle_configs.toJSON());
 			if (this.template) {
 				var data = {
-					collection: this.collection
+						collection: this.collection
 				};
 				// add html to container
 				this.$el.html($.tmpl(this.template, data));
@@ -94,7 +94,7 @@
 				turtle_configs.push(turtle_config);
 			})
 			console.log(turtle_configs);
-			
+
 			$.ajax({
 				url : 'http://localhost/backendAdmin/index.php/controller/turtle_configs',
 				type : 'POST',

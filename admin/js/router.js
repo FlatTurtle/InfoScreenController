@@ -19,11 +19,10 @@
 
 		defaultRoute : function(screenid) {
 			var user = new userModule.Model();
-
 			user.fetch({
-				error : function() {
-					appRouter.navigate("", {
-						trigger : true,
+			    error : function() {
+				    appRouter.navigate("", {
+				    	trigger : true,
 						replace : true
 					});
 				}

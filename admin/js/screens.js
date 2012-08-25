@@ -8,7 +8,7 @@
 	var userModule = application.module('user');
 	var loginModule = application.module('login');
 	var screeneditorModule = application.module('screeneditor');
-	
+
 	/*
 	 * MODEL
 	 */
@@ -45,8 +45,8 @@
 			var self = this;
 			if (this.template) {
 				var data = {
-					screens : this.collection.models,
-					username : this.model.get('username')
+						screens : this.collection.models,
+						username : this.model.get('username')
 				};
 
 				// add html to container
@@ -61,58 +61,5 @@
 				});
 			}
 		}
-	});
-
-	Screens.Router = Backbone.Router.extend({
-		routes : {
-			'' : 'loginRoute',
-			'screens' : 'screensRoute',
-			'screeneditor/:screenid' : 'defaultRoute'
-		},
-
-		defaultRoute : function(screenid) {
-			
-			var user = new userModule.Model();
-			user.fetch({
-				error : function() {
-					appRouter.navigate("", {
-						trigger : true
-					});
-				}
-			});
-			
-			var screenEditorView = new screeneditorModule.View({
-				model : user,
-				screenid : screenid
-			});
-		},
-		loginRoute : function() {
-			
-			var loginView = new loginModule.View();
-		},
-		screensRoute : function() {		
-			var screens = new screensModule.Collection();
-			screens.fetch({
-				error : function() {
-					new Login.Router().navigate("", {
-						trigger : true
-					});
-				}
-			});
-			
-			var user = new userModule.Model();
-			user.fetch({
-				error : function() {
-					new Login.Router().navigate("", {
-						trigger : true
-					});
-				}
-			});
-			
-			var screensView = new screensModule.View({
-				collection : screens,
-				model : user
-			});
-		},
 	});
 })(application.module("screens"));
