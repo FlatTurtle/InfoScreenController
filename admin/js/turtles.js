@@ -60,11 +60,16 @@ Turtles.View = Backbone.View.extend({
 		model.set({dialog:'turtle'});
 		var dialogModule = application.module('turtledialog');
 		var dialogCollection = new dialogModule.Collection();
+		var configurationModule = application.module('configuration');
+		var configurationCollection = new configurationModule.Collection();
+		
+		//fetch turtle_configurations
+		configurationCollection.fetch({data:{turtle_id : model.get('id')}});
 		
 		//fetch options for module
 		dialogCollection.fetch({data:{module_alias: model.get('module_alias')}});
 		
-		var dialogView = new dialogModule.View({collection: dialogCollection,model : model});
+		var dialogView = new dialogModule.View({collection: dialogCollection,model : model,turtle_configs : configurationCollection});
 		$('body').append(dialogView.el);
 	},
 

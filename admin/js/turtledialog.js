@@ -12,7 +12,7 @@
 	});
 
 	Turtledialog.View = Backbone.View.extend({
-		initialize : function() {
+		initialize : function(options) {
 			_.bindAll(this, "render");
 			_.bindAll(this, "close");
 			_.bindAll(this, "save");
@@ -21,6 +21,9 @@
 			this.collection.bind("reset", this.render);
 			this.collection.bind('add', this.render);
 			this.collection.bind('change', this.render);
+			
+			this.turtle_configs = options.turtle_configs;
+			
 			
 			var self = this;
 			
@@ -33,17 +36,30 @@
 			}
 		},
 		render : function() {
+			console.log(this.turtle_configs.toJSON());
 			if (this.template) {
-				console.log(this.collection.toJSON());
 				var data = {
 					collection: this.collection
 				};
 				// add html to container
 				this.$el.html($.tmpl(this.template, data));
 
-				//$('#datepicker').datepicker();
+				for(x in this.collection.models){
+					for(y in this.turtle_configs.models){
+						if(this.turtle_configs.models[y].get('option_id') == this.collection.models[x].get('id')){
+							if(this.collection.models[x].get('value') == 'editable'){
+								console.log('editable');
+								console.log(this.collection.models[x].cid);
+								$('#'+this.collection.models[x].cid).attr('value',this.turtle_configs.models[y].get('extra_value'));
+							}
+							else{
+								console.log('usual');
+								$('#'+this.collection.models[x].cid).attr('selected','selected');
+							}
+						}
+					}
+				}
 			}
-
 		},
 		events : {
 			'click .closebtn' : 'close',
