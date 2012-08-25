@@ -7,7 +7,7 @@
 	var screensModule = application.module('screens');
 	var userModule = application.module('user');
 	var screensModule = application.module('screens');
-	var routerModule = applciation.module('router');
+	var routerModule = application.module('router');
 
 	// VIEW
 	Login.View = Backbone.View

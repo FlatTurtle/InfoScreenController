@@ -8,6 +8,7 @@
 	var turtlesModule = application.module('turtles');
 	var tasksModule = application.module('tasks');
 	var routerModule = application.module('router');
+	var editscreenModule = application.module('editscreen');
 
 	Screeneditor.View = Backbone.View.extend({
 		el : $('body'),
@@ -68,6 +69,7 @@
 					collection : turtles,
 					modules: modules
 				});
+				$('#appScreen').append(view.el);
 				var tasks = new tasksModule.Collection({
 					screenid : this.screenid
 				});
@@ -75,6 +77,10 @@
 				var view3 = new tasksModule.View({
 					collection : tasks
 				});
+				
+				var editscreen = new editscreenModule.Model();
+				editscreen.fetch({data : {screenid : this.screenid},success:function(){}});
+				var editscreenView = new editscreenModule.View({model: editscreen});
 
 			}
 		},

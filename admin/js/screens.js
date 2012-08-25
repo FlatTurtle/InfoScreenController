@@ -8,6 +8,7 @@
 	var userModule = application.module('user');
 	var loginModule = application.module('login');
 	var screeneditorModule = application.module('screeneditor');
+	var routerModule = application.module('router');
 
 	/*
 	 * MODEL
@@ -54,9 +55,8 @@
 
 				$('.screenbtn').click(function() {
 					var model = self.collection.getByCid($(this).attr('id'));
-					new Screens.Router().navigate("screeneditor/" + model.get('id'), {
-						trigger : true,
-						replace : true
+					new routerModule.Router().navigate("screeneditor/" + model.get('id'), {
+						trigger : true
 					});
 				});
 			}

@@ -6,7 +6,6 @@
 	//dependencies
 	var dialogModule = application.module('turtledialog');
 	var configurationModule = application.module('configuration');
-	var editscreenModule = application.module('editscreen');
 
 	// MODEL
 	Turtles.Model = Backbone.Model.extend({});
@@ -28,11 +27,11 @@
 
 //	VIEW
 	Turtles.View = Backbone.View.extend({
-		el : '#appScreen',
 
 		initialize : function(options) {
 			_.bindAll(this, "render");
 			_.bindAll(this, "columnClick");
+			_.bindAll(this, "turtleClick");
 			// refresh view when collection changes. Is needed because fetch is
 			// async
 			this.collection.bind("reset", this.render);
@@ -57,10 +56,17 @@
 		}, 
 
 		turtleClick: function(e){
-			var model = self.collection.getByCid($(e.target).attr('id'));
-			for (x in self.collection.models) {
-				if (self.collection.models[x].get('group') == model.get('group'))
-					self.collection.models[x].set({
+			var model;
+			for(x in this.collection.models){
+				if($(e.target).hasClass(this.collection.models[x].cid)){
+					model = this.collection.models[x];
+					console.log('true');
+				}
+			}
+			console.log(model.toJSON());
+			for (x in this.collection.models) {
+				if (this.collection.models[x].get('group') == model.get('group'))
+					this.collection.models[x].set({
 						selected : false
 					});
 			}
@@ -132,15 +138,6 @@
 					this.addEventListener('dragover', self.handleDragOver, false);
 					this.addEventListener('drop', self.handleDrop, false);
 				});
-
-
-				var editscreen = new editscreenModule.Model();
-				editscreen.fetch({data : {screenid : this.collection.screenid},success:function(){
-					//console.log(editscreen.toJSON());
-				}});
-				//console.log(editscreen.get('title'));
-				var editscreenView = new editscreenModule.View({model: editscreen});
-
 			}
 		},
 

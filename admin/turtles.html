@@ -1,4 +1,3 @@
-<div id="header"></div>
 <table style="height:500px;width:100%;text-align:center;background-color:#0480BE">
     <tr>
         {{for(var i=0;i<columns;i++)}}
@@ -14,15 +13,15 @@
         {{if $value.get("group") == (i+1)}}
         {{if $value.get("selected") == true}}
         
-        <div style="width:100px;height:100px;float:left;margin: 5px" draggable="true" class="turtle selected" id=${$value.cid}>
+        <div style="width:100px;height:100px;float:left;margin: 5px" draggable="true" class="turtle selected ${$value.cid}" id=${$value.cid}>
             <div style="">${$value.get("alias")}</div>
-            <img style="width:36px;height:45px;" src=${$value.toJSON().image}>
+            <img class="${$value.cid}" style="width:36px;height:45px;" src=${$value.toJSON().image}>
             </img>
         </div>
         {{else}}
-        <div style="float:left;margin: 5px;width:100px;height:100px" draggable="true" class="turtle" id=${$value.cid}>
+        <div style="float:left;margin: 5px;width:100px;height:100px" draggable="true" class="turtle ${$value.cid}" id=${$value.cid}>
             <div style="">${$value.get("alias")}</div>
-            <img style="width:36px;height:45px;" src=${$value.toJSON().image}>
+            <img class="${$value.cid}" style="width:36px;height:45px;" src=${$value.toJSON().image}>
             </img>
         </div>
         {{/if}}
