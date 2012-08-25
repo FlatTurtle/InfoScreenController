@@ -1,28 +1,30 @@
 /*
- * TURTLES
+ * 
+ * Author: Glenn Bostoen
  */
 (function(Turtles) {
-// MODEL
-Turtles.Model = Backbone.Model.extend({
-	initialize : function() {
-		//console.log("Welcome to this world");
-	}
-});
+	//dependencies
+	var dialogModule = application.module('turtledialog');
+	var configurationModule = application.module('configuration');
+	var editscreenModule = application.module('editscreen');
+	
+	// MODEL
+	Turtles.Model = Backbone.Model.extend({});
 
-// COLLECTION
-Turtles.Collection = Backbone.Collection
-		.extend({
-			model : Turtles.Model,
-			initialize : function(options) {
-				this._order_by_id = this.comparator;
-				this.url = 'http://localhost/backendAdmin/index.php/controller/turtles/'
-						+ options.screenid;
-				this.screenid = options.screenid;
-			},
-			comparator : function(model) {
-				return model.get('order');
-			}
-		});
+	// COLLECTION
+	Turtles.Collection = Backbone.Collection
+			.extend({
+				model : Turtles.Model,
+				initialize : function(options) {
+					this._order_by_id = this.comparator;
+					this.url = 'http://localhost/backendAdmin/index.php/controller/turtles/'
+							+ options.screenid;
+					this.screenid = options.screenid;
+				},
+				comparator : function(model) {
+					return model.get('order');
+				}
+			});
 
 // VIEW
 Turtles.View = Backbone.View.extend({
@@ -50,17 +52,31 @@ Turtles.View = Backbone.View.extend({
 	},
 	
 	events:{
-		'click .column' : 'columnClick' 
+		'click .column' : 'columnClick',
+		'click .turtle': 'turtleClick'
 	}, 
+	
+	turtleClick: function(e){
+		var model = self.collection.getByCid($(e.target).attr('id'));
+		for (x in self.collection.models) {
+			if (self.collection.models[x].get('group') == model.get('group'))
+				self.collection.models[x].set({
+					selected : false
+				});
+		}
+		model.set({
+			selected : true
+		});
+	},
 	
 	columnClick: function(e){
 		var group = parseInt($(e.target).attr('id').replace('column',''));
 		var collection = this.collection.where({group: group,selected: true});
 		var model = collection[0];
 		model.set({dialog:'turtle'});
-		var dialogModule = application.module('turtledialog');
+		
 		var dialogCollection = new dialogModule.Collection();
-		var configurationModule = application.module('configuration');
+		
 		var configurationCollection = new configurationModule.Collection();
 		
 		//fetch turtle_configurations
@@ -116,24 +132,8 @@ Turtles.View = Backbone.View.extend({
 				this.addEventListener('dragover', self.handleDragOver, false);
 				this.addEventListener('drop', self.handleDrop, false);
 			});
-			$('.turtle').click(
-					function() {
-						var model = self.collection
-								.getByCid($(this).attr('id'));
-						for (x in self.collection.models) {
-							if (self.collection.models[x].get('group') == model
-									.get('group'))
-								self.collection.models[x].set({
-									selected : false
-								});
-						}
-						model.set({
-							selected : true
-						});
-
-					});
 			
-			var editscreenModule = application.module('editscreen');
+			
 			var editscreen = new editscreenModule.Model();
 			editscreen.fetch({data : {screenid : this.collection.screenid},success:function(){
 				//console.log(editscreen.toJSON());
@@ -272,8 +272,6 @@ Turtles.View = Backbone.View.extend({
 				colspan : model1JSON.colspan,
 				selected: model1JSON.selected
 			});
-
-			//console.log(turtles.toJSON());
 		}
 		//moving turtle to empty area
 		else if ($(this).hasClass('addTurtle')
@@ -283,7 +281,6 @@ Turtles.View = Backbone.View.extend({
 			var arrayGroup = turtles.where({
 				group : group
 			});
-			//console.log(turtles.toJSON());
 			var originalGroupSize = turtles.where({
 				group : turtle.get('group')
 			}).length;
@@ -296,17 +293,12 @@ Turtles.View = Backbone.View.extend({
 				order : groupSize,
 				colspan : colspan
 			});
-			
-			
 			if(originalGroupSize == 1){
 				for(x in turtles.models){
 					var groupnr = turtles.models[x].get('group');
 					var groupnr = groupnr - 1;
 					if(turtles.models[x].get('group') > originalGroupNumber) turtles.models[x].set({group : groupnr});
 				}
-			}
-			for(x in turtles.models){
-				console.log(turtles.models[x].toJSON());
 			}
 		}
 		//creating new column for existing turtle
@@ -378,12 +370,12 @@ Turtles.View = Backbone.View.extend({
 					turtle: turtle
 				},
 				success : function(data, textStatus, xhr) {
-					console.log(turtle);
-					console.log('success');
-					//console.log(xhr.status + ' ' + textStatus);
+					//console.log(turtle);
+					//console.log('success');
+					console.log(xhr.status + ' ' + textStatus);
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
-					console.log('fail');
+					//console.log('fail');
 					console.log(xhr.status);
 				}
 			});
@@ -396,10 +388,8 @@ Turtles.View = Backbone.View.extend({
 						else
 							turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:false});
 					}
-					console.log(turtles.toJSON());
 				}
 			});
-			//
 		}
 		//remove turtle
 		else if($(this).hasClass('deleteTurtle') && $(dragSrcEl).hasClass('turtle')){
@@ -439,9 +429,7 @@ Turtles.View = Backbone.View.extend({
 			
 		}
 		
-		
-		
-		
+		//resorting and cleaning up
 		turtles.sort();
 		for(x in turtles.models){
 			console.log(turtles.models[x].toJSON());
@@ -471,9 +459,9 @@ Turtles.View = Backbone.View.extend({
 				turtles: turtles.toJSON()
 			},
 			success : function(data, textStatus, xhr) {
-				console.log(turtles.toJSON());
-				console.log('success');
-				//console.log(xhr.status + ' ' + textStatus);
+				//console.log(turtles.toJSON());
+				//console.log('success');
+				console.log(xhr.status + ' ' + textStatus);
 			},
 			error : function(xhr, ajaxOptions, thrownError) {
 				console.log('fail');

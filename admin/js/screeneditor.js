@@ -1,12 +1,23 @@
 /*
- * SCREENEDITOR VIEW
+ * screeneditor  structure loading
+ * Author: Glenn Bostoen
  */
 (function(Screeneditor) {
+	//dependencies
+	var modulesModule = application.module('modules');
+	var turtlesModule = application.module('turtles');
+	var tasksModule = application.module('tasks');
+	var userModule = application.module('user');
+	var screenModule = application.module('screens');
+	var screeneditorModule = application.module('screeneditor');
+	var loginModule = application.module('login');
+	
+	
+	
 Screeneditor.View = Backbone.View.extend({
 	el : $('body'),
 
 	initialize : function(options) {
-		//console.log("Alerts suck.");
 		_.bindAll(this, "render");
 		this.model.bind("change", this.render);
 		this.model.bind("reset", this.render);
@@ -36,7 +47,7 @@ Screeneditor.View = Backbone.View.extend({
 
 			//rendered!!
 			//render modules
-			var modulesModule = application.module('modules');
+			
 			var modules = new modulesModule.Collection();
 			modules.fetch();
 			var view2 = new modulesModule.View({
@@ -44,7 +55,7 @@ Screeneditor.View = Backbone.View.extend({
 			});
 			
 			//render turtles
-			var turtlesModule = application.module('turtles');
+			
 			var turtles = new turtlesModule.Collection({
 				screenid : this.screenid
 			});
@@ -65,7 +76,7 @@ Screeneditor.View = Backbone.View.extend({
 			});
 			
 			
-			var tasksModule = application.module('tasks');
+			
 			var tasks = new tasksModule.Collection({
 				screenid : this.screenid
 			});
@@ -84,17 +95,14 @@ Screeneditor.View = Backbone.View.extend({
 			url : 'http://localhost/backendAdmin/index.php/controller/logout',
 			type : "GET",
 			success : function(data, textStatus, xhr) {
-				//console.log('success');
-				//console.log(xhr.status + ' ' + textStatus);
+				console.log(xhr.status + ' ' + textStatus);
 				username = data;
 				new Screeneditor.Router().navigate("", {
-					trigger : true,
-					replace : true
+					trigger : true
 				});
 			},
 			error : function(xhr, ajaxOptions, thrownError) {
-				//console.log('fail');
-				//console.log(xhr.status);
+				console.log(xhr.status);
 			}
 		});
 	}
@@ -107,8 +115,8 @@ Screeneditor.Router = Backbone.Router.extend({
 	},
 
 	defaultRoute : function(screenid) {
-		var userModule = application.module('user');
-		var screenModule = application.module('screens');
+		
+		
 		var user = new userModule.Model();
 		var screen = new screenModule.Model({
 			screenid : screenid
@@ -122,20 +130,18 @@ Screeneditor.Router = Backbone.Router.extend({
 				});
 			}
 		});
-		var screeneditorModule = application.module('screeneditor');
+		
 		var screenEditorView = new screeneditorModule.View({
 			model : user,
 			screen : screen
 		});
 	},
 	loginRoute : function() {
-		var loginModule = application.module('login');
 		var loginView = new loginModule.View();
 	},
 	screensRoute : function() {
 		// alert(screenid);
-		var screensModule = application.module('screens');
-		screens = new screensModule.Collection();
+		var screens = new screensModule.Collection();
 		screens.fetch({
 			error : function() {
 				new Login.Router().navigate("", {
@@ -144,8 +150,8 @@ Screeneditor.Router = Backbone.Router.extend({
 				});
 			}
 		});
-		var userModule = application.module('user');
-		user = new userModule.Model();
+		
+		var user = new userModule.Model();
 		user.fetch({
 			error : function() {
 				new Login.Router().navigate("", {
@@ -154,7 +160,7 @@ Screeneditor.Router = Backbone.Router.extend({
 				});
 			}
 		});
-		var screensModule = application.module('screens');
+		
 		var screensView = new screensModule.View({
 			collection : screens,
 			model : user

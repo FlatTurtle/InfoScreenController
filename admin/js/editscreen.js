@@ -1,16 +1,19 @@
+/*
+ * functionality for changing general stuff related to the screen
+ * Author: Glenn Bostoen
+ */
 (function(Editscreen) {
 	Editscreen.Model = Backbone.Model.extend({
-		url:'http://localhost/backendAdmin/index.php/controller/screen/'
+		url : 'http://localhost/backendAdmin/index.php/controller/screen/'
 	});
 	Editscreen.View = Backbone.View.extend({
-		el: '#header',
-		initialize: function(){
+		el : '#header',
+		initialize : function() {
 			_.bindAll(this, "render");
 			this.model.bind("reset", this.render);
 			this.model.bind('add', this.render);
 			this.model.bind('change', this.render);
-			
-			//console.log(this.model.toJSON());
+
 			var self = this;
 			if (this.template == null) {
 				$.get("header.html", function(template) {
@@ -19,14 +22,14 @@
 				});
 			}
 		},
-		render: function(){
+		render : function() {
 			var self = this;
 			if (this.template) {
 				var data = {
 					title : self.model.get('title'),
 					image : self.model.get('logo')
 				};
-				//console.log(self.model.get('title'));
+
 				// add html to container
 				this.$el.html($.tmpl(this.template, data));
 			}

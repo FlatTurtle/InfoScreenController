@@ -1,5 +1,6 @@
 /*
- * Dialog
+ * change settings of turtle in a Dialog
+ * Author: Glenn Bostoen
  */
 (function(Turtledialog) {
 	// dependencies
@@ -23,11 +24,7 @@
 			this.collection.bind('change', this.render);
 			
 			this.turtle_configs = options.turtle_configs;
-			
-			
 			var self = this;
-			
-			
 			if (this.template == null) {
 				$.get("turtledialog.html", function(template) {
 					self.template = template;
@@ -105,12 +102,11 @@
 					turtle_configs: turtle_configs
 				},
 				success : function(data, textStatus, xhr) {
-					console.log(turtle);
-					console.log('success');
-					//console.log(xhr.status + ' ' + textStatus);
+					//console.log('success');
+					console.log(xhr.status + ' ' + textStatus);
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
-					console.log('fail');
+					//console.log('fail');
 					console.log(xhr.status);
 				}
 			});

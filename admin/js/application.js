@@ -1,3 +1,7 @@
+/*
+ * Main application
+ * Author: Glenn Bostoen
+ */
 var application = {
 	// Create this closure to contain the cached modules
 	module : function() {
@@ -21,6 +25,7 @@ var application = {
 };
 
 // new template function
+//needed for creating a for loop in html templ
 (function($) {
 	$.extend(jQuery.tmpl.tag, {
 		"for" : {
@@ -37,6 +42,8 @@ var application = {
 // code has been downloaded and evaluated and is ready to be
 // initialized. Treat this as your single entry point into the
 // application.
+
+//startup of router
 jQuery(function($) {
 	var routerModule = application.module('router');
 	application.router = new routerModule.Router();

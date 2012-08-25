@@ -1,5 +1,6 @@
 /*
- * MODULES
+ * 
+ * Author: Glenn Bostoen
  */
 (function(Tasks) {
 // MODEL
@@ -58,7 +59,7 @@ Tasks.View = Backbone.View.extend({
 		model.set({activated : activated});
 		console.log(model.toJSON());
 		
-		//save to db
+		//save to db activated or not
 		$.ajax({
 			url : 'http://localhost/backendAdmin/index.php/controller/tasks',
 			type : 'POST',
@@ -80,8 +81,6 @@ Tasks.View = Backbone.View.extend({
 		var model = this.collection.getByCid(id);
 		model.set({dialog: 'task'});
 		var dialog = new dialogModule.View({model: model});
-		
-		
 	}
 	
 });

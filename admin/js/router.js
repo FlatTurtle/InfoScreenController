@@ -1,7 +1,15 @@
 /*
- * ROUTER
+ * Main Router
+ * Author: Glenn Bostoen
  */
 (function(Router) {
+	//dependencies
+	var userModule = application.module('user');
+	var screenModule = application.module('screens');
+	var screeneditorModule = application.module('screeneditor');
+	var loginModule = application.module('login');
+	var screensModule = application.module('screens');
+
 	Router.Router = Backbone.Router.extend({
 		routes : {
 			'' : 'loginRoute',
@@ -10,13 +18,8 @@
 		},
 
 		defaultRoute : function(screenid) {
-			var userModule = application.module('user');
-			var screenModule = application.module('screens');
 			var user = new userModule.Model();
-			/*var screen = new screenModule.Model({
-				screenid : screenid
-			});*/
-			
+
 			user.fetch({
 				error : function() {
 					appRouter.navigate("", {
@@ -25,20 +28,16 @@
 					});
 				}
 			});
-			var screeneditorModule = application.module('screeneditor');
 			var screenEditorView = new screeneditorModule.View({
 				model : user,
 				screenid : screenid
 			});
 		},
 		loginRoute : function() {
-			var loginModule = application.module('login');
 			var loginView = new loginModule.View();
 		},
 		screensRoute : function() {
-			// alert(screenid);
-			var screensModule = application.module('screens');
-			screens = new screensModule.Collection();
+			var screens = new screensModule.Collection();
 			screens.fetch({
 				error : function() {
 					new Login.Router().navigate("", {
@@ -47,8 +46,7 @@
 					});
 				}
 			});
-			var userModule = application.module('user');
-			user = new userModule.Model();
+			var user = new userModule.Model();
 			user.fetch({
 				error : function() {
 					new Login.Router().navigate("", {
@@ -57,7 +55,6 @@
 					});
 				}
 			});
-			var screensModule = application.module('screens');
 			var screensView = new screensModule.View({
 				collection : screens,
 				model : user
