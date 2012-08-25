@@ -6,7 +6,7 @@
         {{each turtles}}
         {{if $value.get("group") == (i+1)}}
         {{if $value.get("selected") == true}}
-        <div class="column" style="height:300px;border:2px dashed #000;">${$value.get("alias")}</div>
+        <div class="column" id={{= "column"+$value.get("group")}} style="height:300px;border:2px dashed #000;">${$value.get("alias")}</div>
         {{/if}}
         {{/if}}
         {{/each}}

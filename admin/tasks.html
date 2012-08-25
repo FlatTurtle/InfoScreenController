@@ -1,7 +1,23 @@
 <div>
-    {{each tasks}}
-    <div>
-        ${$value.get("title")}
-    </div>
-    {{/each}}
+    <table>
+        {{each tasks}}
+        <tr id=${$value.cid}>
+            {{if $value.get("activated") == 1}}
+            <td>
+            <input class="checkbox" id=${$value.cid} style="margin: 20px" type="checkbox" checked="checked">
+            </td>
+            {{else}}
+            <td>
+            <input class="checkbox" style="margin: 20px" type="checkbox">
+            </td>
+            {{/if}}
+            <td>
+            <a href="javascript:void(0)" class="task">
+                ${$value.get("name")}
+            </a></td>
+        </tr>
+        {{/each}}
+    </table>
+</div>
+<div id="appDialog">
 </div>

@@ -1,0 +1,36 @@
+<div class="modal" id="myModal">
+    <div class="modal-header">
+        <button type="button" class="close closebtn" data-dismiss="modal" aria-hidden="true">
+            &times;
+        </button>
+        <h3></h3>
+    </div>
+    <div class="modal-body">
+        {{each collection.models}}
+            {{if $value.get("value") == "editable" }}
+                {{if collection.indexOf($value) != 0 && collection.at(collection.indexOf($value)-1).get("value") != "editable"}}
+                </select>
+                {{/if}}
+                <div>${$value.get("key")}</div><input></input>
+            {{else}}
+                {{if $value.cid == collection.models[0].cid}}
+                    <div>${$value.get("key")}</div>
+                    <select><option>${$value.get("value")}</option>
+                {{else}}
+                    {{if $value.get("key") == collection.at(collection.indexOf($value)-1).get("key")}}
+                    <option>${$value.get("value")}</option>
+                    {{else}}
+                    </select><div> ${$value.get("key")}</div><select><option>${$value.get("value")}</option>
+                    {{/if}}
+                {{/if}}
+                {{if collection.indexOf($value) == (collection.length-1)}}
+                    </select>
+                {{/if}}
+            {{/if}}
+        {{/each}}
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:void(0)" class="btn closebtn">close</a>
+        <a href="javascript:void(0)" class="btn btn-primary">Save changes</a>
+    </div>
+</div>

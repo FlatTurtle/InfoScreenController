@@ -30,6 +30,7 @@ Turtles.View = Backbone.View.extend({
 
 	initialize : function(options) {
 		_.bindAll(this, "render");
+		_.bindAll(this, "columnClick");
 		// refresh view when collection changes. Is needed because fetch is
 		// async
 		this.collection.bind("reset", this.render);
@@ -47,9 +48,33 @@ Turtles.View = Backbone.View.extend({
 			});
 		}
 	},
+	
+	events:{
+		'click .column' : 'columnClick' 
+	}, 
+	
+	columnClick: function(e){
+		var group = parseInt($(e.target).attr('id').replace('column',''));
+		var collection = this.collection.where({group: group,selected: true});
+		var model = collection[0];
+		model.set({dialog:'turtle'});
+		var dialogModule = application.module('turtledialog');
+		var dialogCollection = new dialogModule.Collection();
+		
+		//fetch options for module
+		dialogCollection.fetch({data:{module_alias: model.get('module_alias')},success:function(){
+			for(x in dialogCollection.models){
+				if(x!=0 && dialogCollection.models[x].get('key') != dialogCollection.models[x-1].get('key')){
+					dialogCollection.models[x].set({same_key: false});
+				}
+				else dialogCollection.models[x].set({same_key:true});
+			}
+		}});
+		
+		var dialogView = new dialogModule.View({collection: dialogCollection});
+	},
 
 	render : function() {
-		//alert(this.el.toJSON());
 		var self = this;
 		if (this.template) {
 			var turtles = Turtles.turtles;
@@ -71,14 +96,11 @@ Turtles.View = Backbone.View.extend({
 			//console.log(this.collection.length);
 
 			$.each($('.addTurtle'), function() {
-				// console.log('events');
-				var el = $(this).get(0);
-				el.addEventListener('dragover', self.handleDragOver, false);
-				el.addEventListener('drop', self.handleDrop, false);
+				this.addEventListener('dragover', self.handleDragOver, false);
+				this.addEventListener('drop', self.handleDrop, false);
 			});
 			$.each($('.turtle'),
 					function() {
-						//var el = $(this).get(0);
 						this.addEventListener('dragstart',
 								self.handleDragStart, false);
 						this.addEventListener('dragover', self.handleDragOver,
@@ -88,10 +110,12 @@ Turtles.View = Backbone.View.extend({
 						this.addEventListener('drop', self.handleDrop, false);
 					});
 			$.each($('.newColumn'), function() {
-				//console.log('events');
-				var el = $(this).get(0);
-				el.addEventListener('dragover', self.handleDragOver, false);
-				el.addEventListener('drop', self.handleDrop, false);
+				this.addEventListener('dragover', self.handleDragOver, false);
+				this.addEventListener('drop', self.handleDrop, false);
+			});
+			$.each($('.deleteTurtle'), function() {
+				this.addEventListener('dragover', self.handleDragOver, false);
+				this.addEventListener('drop', self.handleDrop, false);
 			});
 			$('.turtle').click(
 					function() {
@@ -109,13 +133,6 @@ Turtles.View = Backbone.View.extend({
 						});
 
 					});
-			/*$.each($('.column'),function(){
-				var airportModule = application.module('airport');
-				var collection = new airportModule.Collection({},{location: 'BRU'});
-				collection.fetch();
-				var view = new airportModule.View({collection : collection});
-				view.setElement($(this));
-			})*/
 			
 			var editscreenModule = application.module('editscreen');
 			var editscreen = new editscreenModule.Model();
@@ -130,15 +147,8 @@ Turtles.View = Backbone.View.extend({
 
 	handleDragStart : function(e) {
 		var turtles = Turtles.turtles;
-		// Target (this) element is the source node.
-		//console.log('drag');
-		//console.log(this);
-		//$(this).css('opacity', '0.4');
 
 		dragSrcEl = this;
-
-		//e.dataTransfer.effectAllowed = 'move';
-		//e.dataTransfer.setData('text/html', this.innerHTML);
 
 		var turtleModel = turtles.getByCid($(this).attr('id'));
 		$.each($('.addTurtle'), function() {
@@ -146,9 +156,16 @@ Turtles.View = Backbone.View.extend({
 					.get('group'))
 				$(this).css('display', 'inline');
 		});
+		
 		$.each($('.newColumn'), function() {
 			$(this).css('display', 'inline');
 		});
+		
+		if($(this).hasClass('turtle')){
+			$.each($('.deleteTurtle'), function() {
+				$(this).css('visibility', 'visible');
+			});
+		}
 	},
 
 	handleDragEnd : function() {
@@ -159,6 +176,9 @@ Turtles.View = Backbone.View.extend({
 		});
 		$.each($('.newColumn'), function() {
 			$(this).css('display', 'none');
+		});
+		$.each($('.deleteTurtle'), function() {
+			$(this).css('visibility', 'hidden');
 		});
 	},
 
@@ -183,6 +203,7 @@ Turtles.View = Backbone.View.extend({
 		}
 		e.preventDefault();
 
+		//adding new module to the screen
 		if ($(this).hasClass('addTurtle') && $(dragSrcEl).hasClass('module')) {
 			var module = modules.getByCid($(dragSrcEl).attr('id'));
 			var pos = parseInt($(this).attr('id').replace('add', ''));
@@ -224,10 +245,9 @@ Turtles.View = Backbone.View.extend({
 					console.log(turtles.toJSON());
 				}
 			});
-			
-			
-			
-		} else if ($(this).hasClass('turtle')) {
+		}
+		//replacing turtles with eachother
+		else if ($(this).hasClass('turtle') && $(dragSrcEl).hasClass('turtle')) {
 			var first, second;
 			var thisEl = this;
 			$.each($('.turtle'), function(index) {
@@ -255,7 +275,9 @@ Turtles.View = Backbone.View.extend({
 			});
 
 			//console.log(turtles.toJSON());
-		} else if ($(this).hasClass('addTurtle')
+		}
+		//moving turtle to empty area
+		else if ($(this).hasClass('addTurtle')
 				&& $(dragSrcEl).hasClass('turtle')) {
 			var group = parseInt($(this).attr('id').replace('add', ''));
 			var turtle = turtles.getByCid($(dragSrcEl).attr('id'));
@@ -287,7 +309,9 @@ Turtles.View = Backbone.View.extend({
 			for(x in turtles.models){
 				console.log(turtles.models[x].toJSON());
 			}
-		} else if ($(this).hasClass('newColumn')
+		}
+		//creating new column for existing turtle
+		else if ($(this).hasClass('newColumn')
 				&& $(dragSrcEl).hasClass('turtle')) {
 			var turtle = turtles.getByCid($(dragSrcEl).attr('id'));
 			
@@ -317,6 +341,108 @@ Turtles.View = Backbone.View.extend({
 				}
 			}
 		}
+		//adding module to a new column
+		else if ($(this).hasClass('newColumn')
+				&& $(dragSrcEl).hasClass('module')) {
+			var module = modules.getByCid($(dragSrcEl).attr('id'));
+			
+			var groupAmount = 0;
+			for (x in turtles.models) {
+				if (turtles.models[x].get('group') > groupAmount)
+					groupAmount = turtles.models[x].get('group');
+			}
+			groupAmount++;
+			
+			var turtle = {
+				"module_alias" : module.get('alias'),
+				"image" : module.get('image'),
+				"group" : groupAmount,
+				"order" : 0,
+				"screen_id": turtles.screenid, 
+				"colspan" : 1
+			};
+			
+			
+			if(originalGroupSize == 1){
+				for(x in turtles.models){
+					var groupnr = turtles.models[x].get('group');
+					var groupnr = groupnr - 1;
+					if(turtles.models[x].get('group') > originalGroupNumber) turtles.models[x].set({group : groupnr});
+				}
+			}
+			//same for both module methods
+			turtles.add(turtle);
+			$.ajax({
+				url : 'http://localhost/backendAdmin/index.php/controller/turtle',
+				type : 'POST',
+				data : {
+					turtle: turtle
+				},
+				success : function(data, textStatus, xhr) {
+					console.log(turtle);
+					console.log('success');
+					//console.log(xhr.status + ' ' + textStatus);
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					console.log('fail');
+					console.log(xhr.status);
+				}
+			});
+			//fetching turtles
+			turtles.fetch({
+				success : function() {
+					for (x in turtles.models) {
+						if (turtles.models[x].get('order') == 0)
+							turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:true});
+						else
+							turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:false});
+					}
+					console.log(turtles.toJSON());
+				}
+			});
+			//
+		}
+		//remove turtle
+		else if($(this).hasClass('deleteTurtle') && $(dragSrcEl).hasClass('turtle')){
+			
+			var turtle = turtles.getByCid($(dragSrcEl).attr('id'));
+			
+			var originalGroupSize = turtles.where({
+				group : turtle.get('group')
+			}).length;
+			var originalGroupNumber = turtle.get('group');
+			turtles.remove(turtle);
+			
+			
+			if(originalGroupSize == 1){
+				for(x in turtles.models){
+					var groupnr = turtles.models[x].get('group');
+					var groupnr = groupnr - 1;
+					if(turtles.models[x].get('group') > originalGroupNumber) turtles.models[x].set({group : groupnr});
+				}
+			}
+			
+			$.ajax({
+				url : 'http://localhost/backendAdmin/index.php/controller/turtle_remove',
+				type : 'POST',
+				data : {
+					turtle: turtle.toJSON()
+				},
+				success : function(data, textStatus, xhr) {
+					console.log(turtle);
+					console.log('success');
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					console.log('fail');
+					console.log(xhr.status);
+				}
+			});
+			
+		}
+		
+		
+		
+		
 		turtles.sort();
 		for(x in turtles.models){
 			console.log(turtles.models[x].toJSON());
@@ -356,6 +482,15 @@ Turtles.View = Backbone.View.extend({
 			}
 		});
 		}
+		$.each($('.addTurtle'), function() {
+			$(this).css('display', 'none');
+		});
+		$.each($('.newColumn'), function() {
+			$(this).css('display', 'none');
+		});
+		$.each($('.deleteTurtle'), function() {
+			$(this).css('visibility', 'hidden');
+		});
 	}
 });
 Turtles.Router = Backbone.Router.extend({

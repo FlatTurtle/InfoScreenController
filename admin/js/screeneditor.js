@@ -39,7 +39,7 @@ Screeneditor.View = Backbone.View.extend({
 			var modulesModule = application.module('modules');
 			var modules = new modulesModule.Collection();
 			modules.fetch();
-			view2 = new modulesModule.View({
+			var view2 = new modulesModule.View({
 				collection : modules
 			});
 			
@@ -62,6 +62,16 @@ Screeneditor.View = Backbone.View.extend({
 			view = new turtlesModule.View({
 				collection : turtles,
 				modules: modules
+			});
+			
+			
+			var tasksModule = application.module('tasks');
+			var tasks = new tasksModule.Collection({
+				screenid : this.screenid
+			});
+			tasks.fetch();
+			var view3 = new tasksModule.View({
+				collection : tasks
 			});
 			
 		}
