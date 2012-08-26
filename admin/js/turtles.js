@@ -27,7 +27,6 @@
 
 //	VIEW
 	Turtles.View = Backbone.View.extend({
-
 		initialize : function(options) {
 			_.bindAll(this, "render");
 			_.bindAll(this, "columnClick");
@@ -143,7 +142,7 @@
 
 		handleDragStart : function(e) {
 			var turtles = Turtles.turtles;
-
+			console.log('drag');
 			dragSrcEl = this;
 
 			var turtleModel = turtles.getByCid($(this).attr('id'));

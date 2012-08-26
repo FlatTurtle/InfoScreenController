@@ -11,8 +11,6 @@
 	var editscreenModule = application.module('editscreen');
 
 	Screeneditor.View = Backbone.View.extend({
-		el : $('body'),
-
 		initialize : function(options) {
 			_.bindAll(this, "render");
 			this.model.bind("change", this.render);

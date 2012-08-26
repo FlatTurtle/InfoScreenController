@@ -32,7 +32,6 @@
 
 		},
 		events : {
-			'click #send' : 'submit',
 			'click .closebtn' : 'close'
 		},
 		close : function() {

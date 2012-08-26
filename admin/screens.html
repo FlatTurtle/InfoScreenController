@@ -21,10 +21,30 @@
         </div>
     </div>
 </div><!--navbar-->
-<div class="container-fluid">
-    {{each screens}}
-    <div class="screen" style="margin: 5px">
-        <a class="btn btn-primary screenbtn" href="javascript:void(0)" id=${$value.cid}>${ $value.get("alias") }</a>
-    </div>
+<div class="span12 offset1" style="text-align: center">
+    {{each collection.models}}
+        {{if collection.indexOf($value) == 0}}
+        <ul class="thumbnails">
+            <li class="span4">
+                <div class="thumbnail screen" id=${$value.cid}>
+                    <div style="background-color: ${$value.get("color")};height:5px"></div>
+                    <img class=${$value.cid} style="height:50px" src=${$value.get("logo")}></img>
+                    <img class=${$value.cid} src="http://icons.iconarchive.com/icons/studiomx/hardwaremx-plus/256/Dell-Display-icon.png"/>
+                    <h3 class=${$value.cid} >${ $value.get("alias") }</h3>
+                    <p>${$value.get("title")}</p>
+                </div>
+            </li>
+        {{else}}
+            <li class="span4">
+                <div class="thumbnail screen" id=${$value.cid}>
+                    <div style="background-color: ${$value.get("color")};height:5px"></div>
+                    <img class=${$value.cid} style="height:50px" src=${$value.get("logo")}></img>
+                    <img class=${$value.cid} src="http://icons.iconarchive.com/icons/studiomx/hardwaremx-plus/256/Dell-Display-icon.png"/>
+                    <h3 class=${$value.cid}>${ $value.get("alias") }</h3>
+                    <p>${$value.get("title")}</p>
+                </div>
+            </li>
+        {{/if}}
     {{/each}}
+    </ul>
 </div>

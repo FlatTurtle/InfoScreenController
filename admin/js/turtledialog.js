@@ -110,6 +110,7 @@
 					console.log(xhr.status);
 				}
 			});
+			this.close();
 		}
 	});
 })(application.module("turtledialog"));

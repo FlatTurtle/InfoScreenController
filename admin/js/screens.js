@@ -24,9 +24,9 @@
 	});
 
 	Screens.View = Backbone.View.extend({
-		el : 'body',
 		initialize : function() {
 			_.bindAll(this, "render");
+			_.bindAll(this, "screenClick");
 			this.model.bind("change", this.render);
 			this.model.bind("reset", this.render);
 			this.model.bind("add", this.render);
@@ -42,23 +42,26 @@
 				});
 			}
 		},
+		events:{
+			'click .screen' : 'screenClick'
+		},
+		screenClick : function(e){
+			console.log(e.target);
+			var model = this.collection.getByCid($(e.target).attr('class'));
+			new routerModule.Router().navigate("screeneditor/" + model.get('id'), {
+				trigger : true
+			});
+		},
 		render : function() {
 			var self = this;
 			if (this.template) {
 				var data = {
-						screens : this.collection.models,
+						collection : this.collection,
 						username : this.model.get('username')
 				};
 
 				// add html to container
 				this.$el.html($.tmpl(this.template, data));
-
-				$('.screenbtn').click(function() {
-					var model = self.collection.getByCid($(this).attr('id'));
-					new routerModule.Router().navigate("screeneditor/" + model.get('id'), {
-						trigger : true
-					});
-				});
 			}
 		}
 	});

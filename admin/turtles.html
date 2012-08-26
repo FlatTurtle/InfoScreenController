@@ -12,16 +12,15 @@
         {{each turtles}}
         {{if $value.get("group") == (i+1)}}
         {{if $value.get("selected") == true}}
-        
         <div style="width:100px;height:100px;float:left;margin: 5px" draggable="true" class="turtle selected ${$value.cid}" id=${$value.cid}>
             <div style="">${$value.get("alias")}</div>
-            <img class="${$value.cid}" style="width:36px;height:45px;" src=${$value.toJSON().image}>
+            <img class="${$value.cid}" style="width:36px;height:45px;" src=${$value.toJSON().image} draggable="true">
             </img>
         </div>
         {{else}}
         <div style="float:left;margin: 5px;width:100px;height:100px" draggable="true" class="turtle ${$value.cid}" id=${$value.cid}>
             <div style="">${$value.get("alias")}</div>
-            <img class="${$value.cid}" style="width:36px;height:45px;" src=${$value.toJSON().image}>
+            <img class="${$value.cid}" style="width:36px;height:45px;" src=${$value.toJSON().image} draggable="true">
             </img>
         </div>
         {{/if}}

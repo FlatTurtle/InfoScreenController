@@ -12,7 +12,6 @@
 	// VIEW
 	Login.View = Backbone.View
 			.extend({
-				el : 'body',
 				initialize : function() {
 					_.bindAll(this, "render");
 					var self = this;

@@ -31,9 +31,11 @@
 				model : user,
 				screenid : screenid
 			});
+			$('body').html(screenEditorView.el);
 		},
 		loginRoute : function() {
 			var loginView = new loginModule.View();
+			$('body').html(loginView.el);
 		},
 		screensRoute : function() {
 			var screens = new screensModule.Collection();
@@ -58,6 +60,7 @@
 				collection : screens,
 				model : user
 			});
+			$('body').html(screensView.el);
 		},
 	});
 })(application.module("router"));
