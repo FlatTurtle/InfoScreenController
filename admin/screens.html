@@ -21,8 +21,9 @@
         </div>
     </div>
 </div><!--navbar-->
-<div class="span12 offset1" style="text-align: center">
-    {{each collection.models}}
+<div style="text-align: center">
+    <div>
+        {{each collection.models}}
         {{if collection.indexOf($value) == 0}}
         <ul class="thumbnails">
             <li class="span4">
@@ -31,20 +32,25 @@
                     <img class=${$value.cid} style="height:50px" src=${$value.get("logo")}></img>
                     <img class=${$value.cid} src="http://icons.iconarchive.com/icons/studiomx/hardwaremx-plus/256/Dell-Display-icon.png"/>
                     <h3 class=${$value.cid} >${ $value.get("alias") }</h3>
-                    <p>${$value.get("title")}</p>
+                    <p>
+                        ${$value.get("title")}
+                    </p>
                 </div>
             </li>
-        {{else}}
+            {{else}}
             <li class="span4">
                 <div class="thumbnail screen" id=${$value.cid}>
                     <div style="background-color: ${$value.get("color")};height:5px"></div>
                     <img class=${$value.cid} style="height:50px" src=${$value.get("logo")}></img>
                     <img class=${$value.cid} src="http://icons.iconarchive.com/icons/studiomx/hardwaremx-plus/256/Dell-Display-icon.png"/>
                     <h3 class=${$value.cid}>${ $value.get("alias") }</h3>
-                    <p>${$value.get("title")}</p>
+                    <p>
+                        ${$value.get("title")}
+                    </p>
                 </div>
             </li>
-        {{/if}}
-    {{/each}}
-    </ul>
+            {{/if}}
+            {{/each}}
+        </ul>
+    </div>
 </div>

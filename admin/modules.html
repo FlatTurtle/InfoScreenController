@@ -1,7 +1,8 @@
-<div style="overflow:scroll;height:300px">
+<h2 style="text-align: center">turtles</h2>
+<div style="overflow:scroll;height:800px;text-align: center">
     {{each modules}}
-    <div> ${$value.get("alias")} </div>
-    <div ><img style="width:36px;height:45px" id=${$value.cid} class="module" draggable="true" src= ${$value.get("image")} ></img></div>
+    <div style="padding: 5pt"> ${$value.get("alias")} </div>
+    <div ><img style="width:50px;height:50px" id=${$value.cid} class="module" draggable="true" src= ${$value.get("image")} ></img></div>
     {{/each}}
 </div>
 <div style="font-size:50pt;padding: 100px;text-align: center;visibility:hidden" class="deleteTurtle">

@@ -71,7 +71,11 @@
 				var tasks = new tasksModule.Collection({
 					screenid : this.screenid
 				});
-				tasks.fetch();
+				tasks.fetch({success: function(){
+					for(x in tasks.models){
+						if(tasks.models[x].get('day_of_week') == '*') tasks.models[x].set({day_of_week:127});
+					}
+				}});
 				var view3 = new tasksModule.View({
 					collection : tasks
 				});

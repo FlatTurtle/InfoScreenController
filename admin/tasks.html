@@ -1,4 +1,5 @@
-<div>
+<div style="text-align: center">
+    <h2>tasks</h2>
     <table>
         {{each tasks}}
         <tr id=${$value.cid}>
@@ -8,16 +9,15 @@
             </td>
             {{else}}
             <td>
-            <input class="checkbox" style="margin: 20px" type="checkbox">
+            <input class="checkbox" id=${$value.cid} style="margin: 20px" type="checkbox">
             </td>
             {{/if}}
-            <td>
-            <a href="javascript:void(0)" class="task">
-                ${$value.get("name")}
-            </a></td>
+            <td><a href="javascript:void(0)" class="task"> ${$value.get("name")} </a></td>
+            <td><a style="margin-left: 20px" href="javascript:void(0)" class="removeTask"> x </a></td>
         </tr>
         {{/each}}
+        <tr class="addTask" style="font-size:50pt">
+            <td><a href="javascript:void(0)">+</a></td>
+        </tr>
     </table>
-</div>
-<div id="appDialog">
 </div>
