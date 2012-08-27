@@ -7,7 +7,6 @@
 		url : 'http://localhost/backendAdmin/index.php/controller/screen/'
 	});
 	Editscreen.View = Backbone.View.extend({
-		el : '#header',
 		initialize : function() {
 			_.bindAll(this, "render");
 			this.model.bind("reset", this.render);
@@ -26,8 +25,7 @@
 			var self = this;
 			if (this.template) {
 				var data = {
-					title : self.model.get('title'),
-					image : self.model.get('logo')
+					model : self.model
 				};
 
 				// add html to container

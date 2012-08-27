@@ -1,23 +1,19 @@
-<div style="text-align: center">
-    <h2>tasks</h2>
-    <table>
+<h2 style="text-align: center">tasks</h2>
+<div class="well" style="text-align: center;height:500px">
+    <table style="width:100%;height: 100%">
         {{each tasks}}
-        <tr id=${$value.cid}>
-            {{if $value.get("activated") == 1}}
+        <tr id=${$value.cid} style="vertical-align: top">
             <td>
-            <input class="checkbox" id=${$value.cid} style="margin: 20px" type="checkbox" checked="checked">
+                {{if $value.get("activated") == 1}}
+                <input class="checkbox" id=${$value.cid} type="checkbox" checked="checked">
+                {{else}}
+                <input class="checkbox" id=${$value.cid} type="checkbox">
+                {{/if}} <a href="javascript:void(0)" class="task"> ${$value.get("name")} </a><a style="margin-left: 5px" href="javascript:void(0)" class="removeTask"> x </a>
             </td>
-            {{else}}
-            <td>
-            <input class="checkbox" id=${$value.cid} style="margin: 20px" type="checkbox">
-            </td>
-            {{/if}}
-            <td><a href="javascript:void(0)" class="task"> ${$value.get("name")} </a></td>
-            <td><a style="margin-left: 20px" href="javascript:void(0)" class="removeTask"> x </a></td>
         </tr>
         {{/each}}
-        <tr class="addTask" style="font-size:50pt">
-            <td><a href="javascript:void(0)">+</a></td>
+        <tr style="vertical-align: bottom" class="addTask" style="width:100%" align="center">
+            <td colspan=3 style="font-size: 50pt" ><a href="javascript:void(0)">+</a></td>
         </tr>
     </table>
 </div>

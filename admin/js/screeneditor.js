@@ -83,6 +83,7 @@
 				var editscreen = new editscreenModule.Model();
 				editscreen.fetch({data : {screenid : this.screenid},success:function(){}});
 				var editscreenView = new editscreenModule.View({model: editscreen});
+				$('#header').append(editscreenView.el);
 
 			}
 		},

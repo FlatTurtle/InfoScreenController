@@ -1,11 +1,11 @@
-<table style="height:500px;width:100%;text-align:center;">
+<table class="well" style="height:300px;width:100%;text-align:center;">
     <tr>
         {{for(var i=0;i<columns;i++)}}
         <td width={{= 100*1./columns+"%"}}>
         {{each turtles}}
         {{if $value.get("group") == (i+1)}}
         {{if $value.get("selected") == true}}
-        <div class="column" id={{= "column"+$value.get("group")}} style="height:300px;border:2px dashed #000;">${$value.get("alias")}</div>
+        <div class="column" id={{= "column"+$value.get("group")}} style="height:300px;border:1px solid #000;">${$value.get("alias")}</div>
         {{/if}}
         {{/if}}
         {{/each}}
@@ -13,26 +13,30 @@
         {{if $value.get("group") == (i+1)}}
         {{if $value.get("selected") == true}}
         <div style="width:100px;height:100px;float:left;margin: 5px" draggable="true" class="turtle ${$value.cid}" id=${$value.cid}>
-            <div style="">${$value.get("alias")}</div>
+            <!--<div style="">
+                ${$value.get("alias")}
+            </div>-->
             <img class="${$value.cid}" style="width:50px;height:50px;" src=${$value.toJSON().image.replace("default","selected")} draggable="true">
             </img>
         </div>
         {{else}}
         <div style="float:left;margin: 5px;width:100px;height:100px" draggable="true" class="turtle ${$value.cid}" id=${$value.cid}>
-            <div style="">${$value.get("alias")}</div>
+            <!--<div style="">
+                ${$value.get("alias")}
+            </div>-->
             <img class="${$value.cid}" style="width:50px;height:50px;" src=${$value.toJSON().image} draggable="true">
             </img>
         </div>
         {{/if}}
         {{/if}}
         {{/each}}
-        <div class="addTurtle" id={{= "add"+(i+1)}} style="display:none;float:left;width:50px;height:50px;background-color:yellow">
-
+        <div class="addTurtle" id={{= "add"+(i+1)}} style="display:none;float:left;width:50px;height:50px;background-color:grey">
         </div>
         </td>
         {{/for}}
         <td draggable="true" style="display:none" class="newColumn">
-            <div style="font-size:50pt">+</div>
-        </td>
+        <div style="font-size:50pt">
+            +
+        </div></td>
     </tr>
 </table>

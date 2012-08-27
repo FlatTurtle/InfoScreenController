@@ -219,27 +219,26 @@
 						turtle: turtle
 					},
 					success : function(data, textStatus, xhr) {
-						console.log(turtle);
 						console.log('success');
-						//console.log(xhr.status + ' ' + textStatus);
+						//fetching turtles
+						turtles.fetch({
+							success : function() {
+								for (x in turtles.models) {
+									if (turtles.models[x].get('order') == 0)
+										turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:true});
+									else
+										turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:false});
+								}
+								console.log(turtles.toJSON());
+							}
+						});
 					},
 					error : function(xhr, ajaxOptions, thrownError) {
 						console.log('fail');
-						console.log(xhr.status);
+						console.log(xhr.status+" "+thrownError);
 					}
 				});
-				//fetching turtles
-				turtles.fetch({
-					success : function() {
-						for (x in turtles.models) {
-							if (turtles.models[x].get('order') == 0)
-								turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:true});
-							else
-								turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:false});
-						}
-						console.log(turtles.toJSON());
-					}
-				});
+				
 			}
 			//replacing turtles with eachother
 			else if ($(this).hasClass('turtle') && $(dragSrcEl).hasClass('turtle')) {
