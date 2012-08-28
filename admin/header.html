@@ -1,5 +1,8 @@
 <div>
     <h2 style="text-align: center"> ${model.get("title")}</h2>
-    <div style="background-color: ${model.get("color")};height:10px"></div>
+    <div>
+        <div id="colorHeader" style="background-color: ${model.get("color")};height:10px"></div>
+    </div>
+    <input type="text" class="span1" value=${model.get("color")} id="cp1">
     <img style="height:50px;padding:20px" src=${model.get("logo")}></img>
 </div>

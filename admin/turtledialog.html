@@ -6,6 +6,8 @@
         <h3></h3>
     </div>
     <div class="modal-body">
+        <label>width:</label>
+        <input id="colspan" type="text" value=${turtle.get("colspan")}></input>
         {{each collection.models}}
             {{if $value.get("value") == "editable" }}
                 {{if collection.indexOf($value) != 0 && collection.at(collection.indexOf($value)-1).get("value") != "editable"}}

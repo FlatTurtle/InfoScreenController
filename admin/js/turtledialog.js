@@ -24,6 +24,9 @@
 			this.collection.bind('change', this.render);
 
 			this.turtle_configs = options.turtle_configs;
+			this.turtles = options.turtles;
+			this.turtle = options.turtle;
+			
 			var self = this;
 			if (this.template == null) {
 				$.get("turtledialog.html", function(template) {
@@ -36,7 +39,8 @@
 			console.log(this.turtle_configs.toJSON());
 			if (this.template) {
 				var data = {
-						collection: this.collection
+						collection: this.collection,
+						turtle: this.turtle
 				};
 				// add html to container
 				this.$el.html($.tmpl(this.template, data));
@@ -93,7 +97,6 @@
 				}
 				turtle_configs.push(turtle_config);
 			})
-			console.log(turtle_configs);
 
 			$.ajax({
 				url : 'http://localhost/backendAdmin/index.php/controller/turtle_configs',
@@ -107,6 +110,28 @@
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
 					//console.log('fail');
+					console.log(xhr.status);
+				}
+			});
+			var colspan = $('#colspan').val();
+			var group = this.turtles.where({group: this.turtle.get("group")});
+			for(x in group){
+				group[x].set({colspan:colspan});
+			}
+			//save to database
+			$.ajax({
+				url : 'http://localhost/backendAdmin/index.php/controller/turtles',
+				type : 'POST',
+				data : {
+					turtles: self.turtles.toJSON()
+				},
+				success : function(data, textStatus, xhr) {
+					//console.log(turtles.toJSON());
+					//console.log('success');
+					console.log(xhr.status + ' ' + textStatus);
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					console.log('fail');
 					console.log(xhr.status);
 				}
 			});

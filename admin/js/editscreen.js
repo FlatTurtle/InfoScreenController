@@ -30,6 +30,31 @@
 
 				// add html to container
 				this.$el.html($.tmpl(this.template, data));
+				
+				$('#cp1').colorpicker().on('changeColor', function(ev){
+					  //console.log('colorChange');
+					  $('#cp1').attr('value',ev.color.toHex());
+					  $('#colorHeader').css('background-color',ev.color.toHex());
+				}).on('hide',function(ev){
+					console.log('colorSave');
+					self.model.set({color: ev.color.toHex()});
+					console.log(self.model.toJSON());
+					$.ajax({
+						url : 'http://localhost/backendAdmin/index.php/controller/screens',
+						type : 'POST',
+						data : {
+							screens: Array(self.model.toJSON())
+						},
+						success : function(data, textStatus, xhr) {
+							console.log('success');
+							//fetching turtles
+						},
+						error : function(xhr, ajaxOptions, thrownError) {
+							console.log('fail');
+							console.log(xhr.status+" "+thrownError);
+						}
+					});
+				});
 			}
 		}
 	});

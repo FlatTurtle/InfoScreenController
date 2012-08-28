@@ -46,6 +46,11 @@
 				var view2 = new modulesModule.View({
 					collection : modules
 				});
+				
+				var editscreen = new editscreenModule.Model();
+				editscreen.fetch({data : {screenid : this.screenid},success:function(){}});
+				var editscreenView = new editscreenModule.View({model: editscreen});
+				$('#appScreen').append(editscreenView.el);
 
 				//render turtles
 
@@ -80,10 +85,7 @@
 					collection : tasks
 				});
 				
-				var editscreen = new editscreenModule.Model();
-				editscreen.fetch({data : {screenid : this.screenid},success:function(){}});
-				var editscreenView = new editscreenModule.View({model: editscreen});
-				$('#header').append(editscreenView.el);
+				
 
 			}
 		},

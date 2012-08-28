@@ -1,16 +1,16 @@
 <table class="well" style="height:300px;width:100%;text-align:center;">
     <tr>
-        {{for(var i=0;i<columns;i++)}}
-        <td width={{= 100*1./columns+"%"}}>
-        {{each turtles}}
-        {{if $value.get("group") == (i+1)}}
+        {{for(var i=1;i<=columns;i++)}}
+        <td width={{= 100*turtles.fromGroup(i)["_wrapped"][0].get("colspan")*1./width+"%"}}>
+        {{each turtles.models}}
+        {{if $value.get("group") == (i)}}
         {{if $value.get("selected") == true}}
         <div class="column" id={{= "column"+$value.get("group")}} style="height:300px;border:1px solid #000;">${$value.get("alias")}</div>
         {{/if}}
         {{/if}}
         {{/each}}
-        {{each turtles}}
-        {{if $value.get("group") == (i+1)}}
+        {{each turtles.models}}
+        {{if $value.get("group") == (i)}}
         {{if $value.get("selected") == true}}
         <div style="width:100px;height:100px;float:left;margin: 5px" draggable="true" class="turtle ${$value.cid}" id=${$value.cid}>
             <!--<div style="">

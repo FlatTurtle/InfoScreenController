@@ -22,6 +22,11 @@
 		},
 		comparator : function(model) {
 			return model.get('order');
+		},
+		fromGroup : function(group){
+			return _(this.filter(function(data) {
+			  	return data.get('group') == group;
+			}));
 		}
 	});
 
@@ -90,7 +95,7 @@
 			//fetch options for module
 			dialogCollection.fetch({data:{module_alias: model.get('module_alias')}});
 
-			var dialogView = new dialogModule.View({collection: dialogCollection,model : model,turtle_configs : configurationCollection});
+			var dialogView = new dialogModule.View({collection: dialogCollection,model : model,turtle_configs : configurationCollection,turtles:this.collection,turtle:model});
 			$('body').append(dialogView.el);
 		},
 
@@ -98,14 +103,23 @@
 			var self = this;
 			if (this.template) {
 				var turtles = Turtles.turtles;
-				var colCount = 0;
+				var groupCount = 0;
+				var width =0;
 				for (x in turtles.models) {
-					if (turtles.models[x].get('group') > colCount)
-						colCount = turtles.models[x].get('group');
+					if (turtles.models[x].get('group') > groupCount)
+						groupCount = turtles.models[x].get('group');
+				}
+				console.log(turtles.toJSON());
+				for(var i=1;i<=groupCount;i++){
+					var group = turtles.fromGroup(i);
+					//console.log(group);
+					width+= parseInt(group['_wrapped'][0].get('colspan'));
 				}
 				var data = {
-						turtles : this.collection.models,
-						columns : colCount
+						turtles : this.collection,
+						columns : groupCount,
+						width: width
+						
 				};
 
 				// add html to container
@@ -368,23 +382,24 @@
 						//console.log(turtle);
 						//console.log('success');
 						console.log(xhr.status + ' ' + textStatus);
+						//fetching turtles
+						turtles.fetch({
+							success : function() {
+								for (x in turtles.models) {
+									if (turtles.models[x].get('order') == 0)
+										turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:true});
+									else
+										turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:false});
+								}
+							}
+						});
 					},
 					error : function(xhr, ajaxOptions, thrownError) {
 						//console.log('fail');
 						console.log(xhr.status);
 					}
 				});
-				//fetching turtles
-				turtles.fetch({
-					success : function() {
-						for (x in turtles.models) {
-							if (turtles.models[x].get('order') == 0)
-								turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:true});
-							else
-								turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:false});
-						}
-					}
-				});
+				
 			}
 			//remove turtle
 			else if($(this).hasClass('deleteTurtle') && $(dragSrcEl).hasClass('turtle')){
