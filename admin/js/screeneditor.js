@@ -8,7 +8,7 @@
 	var turtlesModule = application.module('turtles');
 	var tasksModule = application.module('tasks');
 	var routerModule = application.module('router');
-	var editscreenModule = application.module('editscreen');
+	var headerModule = application.module('header');
 
 	Screeneditor.View = Backbone.View.extend({
 		initialize : function(options) {
@@ -42,15 +42,21 @@
 				//render modules
 
 				var modules = new modulesModule.Collection();
-				modules.fetch();
+				modules.fetch({
+					error: function(){
+						new routerModule.Router().navigate("", {
+							trigger : true
+						});
+					}
+				});
 				var view2 = new modulesModule.View({
 					collection : modules
 				});
 				
-				var editscreen = new editscreenModule.Model();
-				editscreen.fetch({data : {screenid : this.screenid},success:function(){}});
-				var editscreenView = new editscreenModule.View({model: editscreen});
-				$('#appScreen').append(editscreenView.el);
+				var header = new headerModule.Model();
+				header.fetch({data : {screenid : this.screenid},success:function(){}});
+				var headerView = new headerModule.View({model: header});
+				$('#appScreen').append(headerView.el);
 
 				//render turtles
 
@@ -66,6 +72,11 @@
 								turtles.models[x].set({order : parseInt(turtles.models[x].get('order')),group : parseInt(turtles.models[x].get('group')),selected:false});
 						}
 						console.log(turtles.toJSON());
+					},
+					error: function(){
+						new routerModule.Router().navigate("", {
+							trigger : true
+						});
 					}
 				});
 				view = new turtlesModule.View({
@@ -76,11 +87,18 @@
 				var tasks = new tasksModule.Collection({
 					screenid : this.screenid
 				});
-				tasks.fetch({success: function(){
-					for(x in tasks.models){
-						if(tasks.models[x].get('day_of_week') == '*') tasks.models[x].set({day_of_week:127});
+				tasks.fetch({
+					success: function(){
+						for(x in tasks.models){
+							if(tasks.models[x].get('day_of_week') == '*') tasks.models[x].set({day_of_week:127});
+						}
+					},
+					error:function(){
+						new routerModule.Router().navigate("", {
+							trigger : true
+						});
 					}
-				}});
+				});
 				var view3 = new tasksModule.View({
 					collection : tasks
 				});

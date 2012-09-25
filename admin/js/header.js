@@ -2,11 +2,11 @@
  * functionality for changing general stuff related to the screen
  * Author: Glenn Bostoen
  */
-(function(Editscreen) {
-	Editscreen.Model = Backbone.Model.extend({
+(function(Header) {
+	Header.Model = Backbone.Model.extend({
 		url : 'http://localhost/backendAdmin/index.php/controller/screen/'
 	});
-	Editscreen.View = Backbone.View.extend({
+	Header.View = Backbone.View.extend({
 		initialize : function() {
 			_.bindAll(this, "render");
 			this.model.bind("reset", this.render);
@@ -58,4 +58,4 @@
 			}
 		}
 	});
-})(application.module('editscreen'));
+})(application.module('header'));

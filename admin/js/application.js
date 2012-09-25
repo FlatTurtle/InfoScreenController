@@ -45,7 +45,7 @@ var application = {
 
 //startup of router
 jQuery(function($) {
-	var routerModule = application.module('router');
+	/*var routerModule = application.module('router');
 	application.router = new routerModule.Router();
-	Backbone.history.start();
+	Backbone.history.start();*/
 });

@@ -80,6 +80,7 @@
 		},
 
 		columnClick: function(e){
+			
 			var group = parseInt($(e.target).attr('id').replace('column',''));
 			var collection = this.collection.where({group: group,selected: true});
 			var model = collection[0];
@@ -205,6 +206,7 @@
 		handleDrop : function(e) {
 			var turtles = Turtles.turtles;
 			var modules = Turtles.modules;
+			console.log(turtles.toJSON());
 			// this/e.target is current target element.
 			// alert(this.id);
 			if (e.stopPropagation) {
@@ -445,16 +447,16 @@
 				console.log(turtles.models[x].toJSON());
 			}
 			for(x in turtles.models){
-				var group = turtles.where({group: turtles.models[x].get('group')});
+				var group = turtles.fromGroup(turtles.models[x].get('group'));
 				var groupSelected = turtles.where({selected: true,group: turtles.models[x].get('group')});
 				if(groupSelected.length == 0){
-					group[0].set({selected:true});
+					group['_wrapped'][0].set({selected:true});
 				}
 				else if(groupSelected.length > 1){
 					for(var i=1;i<groupSelected.length;i++) groupSelected[i].set({selected : false});
 				}
-				for(y in group){
-					group[y].set({order: y});
+				for(y in group['_wrapped']){
+					group['_wrapped'][y].set({order: y});
 				}
 			}
 			turtles.sort();
@@ -488,6 +490,7 @@
 			$.each($('.deleteTurtle'), function() {
 				$(this).css('visibility', 'hidden');
 			});
+			console.log(turtles.toJSON());
 		}
 	});
 })(application.module("turtles"));
