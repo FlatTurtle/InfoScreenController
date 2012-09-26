@@ -116,7 +116,7 @@
 			}
 			
 		},
-
+		// close function needed to destroy everything properly
 		close : function() {
 			this.remove();
 			this.unbind();

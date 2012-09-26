@@ -32,7 +32,6 @@
 				this.$el.html($.tmpl(this.template, data));
 				
 				$('#cp1').colorpicker().on('changeColor', function(ev){
-					  //console.log('colorChange');
 					  $('#cp1').attr('value',ev.color.toHex());
 					  $('#colorHeader').css('background-color',ev.color.toHex());
 				}).on('hide',function(ev){
@@ -47,7 +46,6 @@
 						},
 						success : function(data, textStatus, xhr) {
 							console.log('success');
-							//fetching turtles
 						},
 						error : function(xhr, ajaxOptions, thrownError) {
 							console.log('fail');
